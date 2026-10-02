@@ -1,0 +1,71 @@
+<section class="mx-auto max-w-6xl px-4 py-8 space-y-8">
+  <div class="rounded-2xl bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-700 text-white p-8 shadow">
+    <p class="text-xs uppercase tracking-widest opacity-80">{{ lang.t('heroEyebrow') }}</p>
+    <h1 class="mt-2 text-3xl md:text-4xl font-bold">{{ lang.t('heroTitle') }}</h1>
+    <p class="mt-3 max-w-2xl text-emerald-50">
+      {{ lang.t('heroDescSeed') }} <strong>Sifi Ghrieb</strong> {{ lang.t('heroDescDecret') }}
+      {{ lang.t('heroDescLive') }} <span class="underline">premier-ministre.gov.dz, presidence.dz, aps.dz, joradp.dz, anep.com.dz</span>.
+    </p>
+    <p class="mt-3 text-xs text-emerald-100">
+      {{ lang.t('formationDate') }} <time [attr.datetime]="formationDate">{{ lang.formatDate(formationDate) }}</time>
+      ({{ formationDate }}, {{ lang.t('decreeRef') }} n°{{ decreeRef }})
+      • {{ lang.t('lastCouncil') }} <time [attr.datetime]="lastCouncilDate">{{ lang.formatDate(lastCouncilDate) }}</time> ({{ lastCouncilDate }})
+    </p>
+    <div class="mt-6 flex flex-wrap gap-3">
+      <a routerLink="/ministers" class="rounded-lg bg-white text-emerald-900 px-4 py-2 font-semibold hover:bg-emerald-50">{{ lang.t('viewMinisters') }} {{ gov.totalCount() }} {{ lang.t('ministersWord') }}</a>
+      <a routerLink="/radar" class="rounded-lg border border-white/40 px-4 py-2 font-semibold hover:bg-white/10">{{ lang.t('openRadar') }} @if (radar.unreadCount() > 0) { <span class="ml-1 rounded-full bg-red-500 px-2 py-0.5 text-xs">{{ radar.unreadCount() }} new</span> }</a>
+      <a routerLink="/agent" class="rounded-lg border border-white/40 px-4 py-2 font-semibold hover:bg-white/10">{{ lang.t('askAgent') }}</a>
+    </div>
+    <p class="mt-4 text-xs opacity-80">{{ lang.t('lastCheckMinisters') }} {{ gov.lastChecked() }} • {{ lang.t('radarWord') }} {{ radar.lastCheck() }}</p>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-4">
+    <div class="rounded-xl border bg-white p-5 shadow-sm">
+      <p class="text-sm text-gray-500">{{ lang.t('govCard') }}</p>
+      <p class="text-3xl font-bold">{{ gov.totalCount() }}</p>
+      <p class="text-sm text-gray-600">{{ lang.t('members') }} • {{ gov.newCount() }} {{ lang.t('newWord') }} • {{ gov.ministersEtatCount() }} {{ lang.t('etatWord') }}</p>
+      <p class="mt-1 text-xs text-gray-500"><time [attr.datetime]="formationDate">{{ lang.formatDate(formationDate) }}</time> ({{ formationDate }})</p>
+      <a routerLink="/ministers" class="mt-3 inline-block text-emerald-700 font-semibold hover:underline">{{ lang.t('explore') }}</a>
+    </div>
+    <div class="rounded-xl border bg-white p-5 shadow-sm">
+      <p class="text-sm text-gray-500">{{ lang.t('radar') }}</p>
+      <p class="text-3xl font-bold">{{ radar.items().length }}</p>
+      <p class="text-sm text-gray-600">{{ lang.t('radarSignals') }} • {{ radar.unreadCount() }} {{ lang.t('unread') }}</p>
+      <p class="mt-1 text-xs text-gray-500">{{ lang.t('lastCouncil') }} <time [attr.datetime]="lastCouncilDate">{{ lang.formatDate(lastCouncilDate) }}</time></p>
+      <a routerLink="/radar" class="mt-3 inline-block text-emerald-700 font-semibold hover:underline">{{ lang.t('viewDecrees') }}</a>
+    </div>
+    <div class="rounded-xl border bg-white p-5 shadow-sm">
+      <p class="text-sm text-gray-500">{{ lang.t('agentPuter') }}</p>
+      <p class="text-sm text-gray-700 mt-1">{{ lang.t('agentPuterDesc') }}</p>
+      <a routerLink="/agent" class="mt-3 inline-block text-emerald-700 font-semibold hover:underline">{{ lang.t('testAgent') }}</a>
+    </div>
+  </div>
+
+  <div class="rounded-xl border bg-white p-5 shadow-sm">
+    <h2 class="font-bold text-lg">{{ lang.t('sourcesTitle') }} — {{ sources.length }} {{ lang.t('sourcesCount') }}</h2>
+    <p class="mt-1 text-xs text-gray-500">{{ lang.t('verifiedBadge') }} : composition, JORADP N°67 du 16/09/2026, BOMOP hebdo, portail marches-publics.gov.dz.</p>
+    <ul class="mt-3 grid md:grid-cols-2 gap-3 text-sm">
+      @for (s of sources; track s.id) {
+        <li class="rounded-lg bg-gray-50 border p-3 space-y-1">
+          <div class="flex items-center gap-2">
+            <span class="rounded bg-emerald-100 text-emerald-800 px-2 py-0.5 text-xs font-semibold">{{ s.kind }}</span>
+            <a [href]="s.url" target="_blank" rel="noopener" class="font-bold text-emerald-800 hover:underline">{{ lang.sourceLabel(s) }}</a>
+          </div>
+          <p class="text-gray-700">{{ lang.sourceDescription(s) }}</p>
+          <p class="text-xs"><span class="font-semibold">{{ lang.t('watchLabel') }} :</span> {{ lang.sourceWatch(s) }}</p>
+          <p class="text-xs text-gray-600"><span class="font-semibold">{{ lang.t('frequencyLabel') }} :</span> {{ lang.sourceFrequency(s) }} • <span class="font-semibold">{{ lang.t('languagesLabel') }} :</span> {{ s.languages }}</p>
+          @if (s.keyPages?.length) {
+            <p class="text-xs break-all">
+              <span class="font-semibold">{{ lang.t('keyPagesLabel') }} :</span>
+              @for (k of s.keyPages; track k; let last = $last) {
+                <a [href]="k" target="_blank" rel="noopener" class="text-emerald-700 underline">{{ k }}</a>@if (!last) { <span> • </span> }
+              }
+            </p>
+          }
+          <p class="text-xs text-gray-500 break-all">{{ s.url }}</p>
+        </li>
+      }
+    </ul>
+    <p class="mt-3 text-xs text-gray-500">{{ lang.t('radarTip') }}</p>
+  </div>
+</section>

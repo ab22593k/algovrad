@@ -1,0 +1,71 @@
+<section class="mx-auto max-w-6xl px-4 py-6 space-y-4">
+  <div class="flex flex-wrap items-end justify-between gap-3">
+    <div>
+      <h1 class="text-2xl font-bold">{{ lang.t('radarTitle') }} @if (store.unreadCount() > 0) { <span class="rounded-full bg-red-600 text-white text-xs px-2 py-1 align-middle">{{ store.unreadCount() }} new</span> }</h1>
+      <p class="text-sm text-gray-600">{{ lang.t('updatedOn') }} : {{ store.lastCheck() }}</p>
+      @if (store.message()) { <p class="mt-1 text-sm rounded-lg bg-emerald-50 border border-emerald-200 p-2">{{ store.message() }}</p> }
+    </div>
+    <div class="flex gap-2">
+      <button (click)="store.markAllRead()" class="rounded-lg border px-4 py-2 text-sm hover:bg-gray-50">{{ lang.t('markRead') }}</button>
+      <button (click)="store.checkForUpdates()" [disabled]="store.isChecking()"
+        class="rounded-lg bg-emerald-700 px-4 py-2 text-white font-semibold hover:bg-emerald-800 disabled:opacity-50">
+        @if (store.isChecking()) { {{ lang.t('scanning') }} } @else { {{ lang.t('checkNews') }} }
+      </button>
+    </div>
+  </div>
+
+  <div class="flex flex-wrap gap-2">
+    @for (k of store.kindIds(); track k) {
+      <button (click)="store.setKind(k)"
+        [class]="store.kindFilter() === k ? 'rounded-full bg-emerald-700 text-white px-3 py-1 text-sm' : 'rounded-full border px-3 py-1 text-sm hover:bg-emerald-50'">
+        {{ lang.kindLabel(k) }}
+      </button>
+    }
+  </div>
+
+  <input #s type="search" [placeholder]="lang.t('filterPh')"
+    [value]="store.search()" (input)="store.setSearch(s.value)"
+    class="w-full rounded-lg border px-4 py-2 focus:outline-emerald-600" />
+
+  <div class="space-y-3">
+    @for (it of store.filtered(); track it.id) {
+      <article class="rounded-xl border bg-white p-4 shadow-sm">
+        <div class="flex flex-wrap items-center gap-2 text-xs">
+          <span class="rounded-full bg-emerald-100 text-emerald-900 px-2 py-0.5 font-bold">{{ lang.kindLabel(it.kind) }}</span>
+          <span class="rounded bg-gray-100 px-2 py-0.5 font-semibold">
+            {{ lang.t('publishedOn') }} <time [attr.datetime]="it.publishedAt">{{ lang.formatDate(it.publishedAt) }}</time>
+            <span class="text-gray-400">({{ it.publishedAt }})</span>
+          </span>
+          <span class="text-gray-500">{{ it.source }}</span>
+          @if (it.isNew) { <span class="rounded-full bg-red-100 text-red-700 px-2 py-0.5 font-bold">{{ lang.t('newDrop') }}</span> }
+        </div>
+        <h2 class="mt-1 font-bold">{{ lang.radarTitle(it) }}</h2>
+        <p class="mt-1 text-sm text-gray-700">{{ lang.radarSummary(it) }}</p>
+        <div class="mt-2 flex flex-wrap items-center gap-2">
+          @for (t of it.tags; track t) { <span class="rounded bg-gray-100 px-2 py-0.5 text-xs">#{{ t }}</span> }
+          <a [href]="it.sourceUrl" target="_blank" rel="noopener" class="ms-auto text-sm text-emerald-700 font-semibold hover:underline">{{ lang.t('officialSource') }}</a>
+        </div>
+      </article>
+    } @empty {
+      <p class="rounded-lg bg-amber-50 border p-4 text-sm">{{ lang.t('noSignal') }}</p>
+    }
+  </div>
+
+  <div class="rounded-xl border bg-gray-50 p-4 text-xs text-gray-600">
+    <p class="font-semibold">{{ lang.t('radarSourcesTitle') }} — {{ sources.length }} {{ lang.t('sourcesCount') }}</p>
+    <ul class="mt-2 grid md:grid-cols-2 gap-2">
+      @for (src of sources; track src.id) {
+        <li class="rounded bg-white border p-2">
+          <div class="flex items-center gap-1">
+            <span class="rounded bg-emerald-100 text-emerald-800 px-1.5 py-0.5 text-[11px] font-bold">{{ src.kind }}</span>
+            <a [href]="src.url" target="_blank" rel="noopener" class="font-semibold text-emerald-700 underline">{{ lang.sourceLabel(src) }}</a>
+          </div>
+          <p class="mt-1">{{ lang.sourceDescription(src) }}</p>
+          <p class="mt-1"><span class="font-semibold">{{ lang.t('watchLabel') }} :</span> {{ lang.sourceWatch(src) }}</p>
+          <p class="text-gray-500">{{ lang.sourceFrequency(src) }} • {{ src.languages }}</p>
+        </li>
+      }
+    </ul>
+    <p class="mt-2">{{ lang.t('snapshotsNote') }}</p>
+  </div>
+</section>

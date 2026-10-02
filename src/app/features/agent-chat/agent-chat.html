@@ -1,0 +1,39 @@
+<section class="mx-auto max-w-3xl px-4 py-6 space-y-4">
+  <div>
+    <h1 class="text-2xl font-bold">{{ lang.t('agentTitle') }}</h1>
+    <p class="text-sm text-gray-600">{{ lang.t('agentSubtitle') }}</p>
+    @if (puter.lastError()) { <p class="mt-2 rounded-lg bg-red-50 border border-red-200 p-2 text-sm text-red-700">{{ puter.lastError() }}</p> }
+  </div>
+
+  <div class="flex flex-wrap gap-2 text-sm">
+    @for (q of exampleQuestions(); track q) {
+      <button (click)="askExample(q)" class="rounded-full border px-3 py-1 hover:bg-emerald-50">{{ q }}</button>
+    }
+  </div>
+
+  <div class="space-y-3 rounded-xl border bg-white p-4 shadow-sm min-h-[300px]">
+    @for (m of agent.messages(); track m.id) {
+      <div [class]="m.role === 'user' ? 'ms-auto max-w-[85%] rounded-xl bg-emerald-700 text-white px-3 py-2 text-sm' : 'me-auto max-w-[90%] rounded-xl bg-gray-100 px-3 py-2 text-sm'">
+        <p class="whitespace-pre-wrap">{{ m.text }}</p>
+      </div>
+    } @empty {
+      <p class="text-sm text-gray-500">{{ lang.t('emptyConv') }}</p>
+    }
+    @if (agent.isThinking()) { <p class="text-sm text-gray-500 animate-pulse">{{ lang.t('thinking') }}</p> }
+  </div>
+
+  <form (submit)="send(); $event.preventDefault()" class="flex gap-2">
+    <div class="flex-1">
+      <input [formField]="chatForm.question" [placeholder]="lang.t('inputPh')" class="w-full rounded-lg border px-4 py-2 focus:outline-emerald-600" />
+      @if (chatForm.question().touched() && chatForm.question().errors().length) {
+        <p class="mt-1 text-xs text-red-600">{{ chatForm.question().errors()[0].message }}</p>
+      }
+    </div>
+    <button type="submit" [disabled]="chatForm().invalid() || agent.isThinking()" class="rounded-lg bg-emerald-700 px-4 py-2 text-white font-semibold hover:bg-emerald-800 disabled:opacity-50">{{ lang.t('send') }}</button>
+  </form>
+
+  <div class="flex items-center justify-between text-xs text-gray-500">
+    <label class="flex items-center gap-2"><input type="checkbox" [checked]="agent.useLiveContext()" (change)="agent.useLiveContext.set(!agent.useLiveContext())" /> {{ lang.t('injectCtx') }}</label>
+    <button (click)="agent.clear()" class="underline hover:text-gray-700">{{ lang.t('clearConv') }}</button>
+  </div>
+</section>
