@@ -1,7 +1,7 @@
 import { Service, inject, signal } from '@angular/core';
 import { AgentMessage } from './minister.model';
 import { AGENT_SYSTEM, SEED_MINISTERS, SEED_RADAR } from './government-data';
-import { Puter } from './puter';
+import { PUTER_MODEL, Puter } from './puter';
 import { LanguageStore } from './language-store';
 import type { Lang } from './i18n';
 
@@ -94,7 +94,7 @@ export class GovAgent {
       const langInstruction =
         l === 'ar' ? 'Réponds en arabe (avec noms français entre parenthèses).' : l === 'en' ? 'Answer in English (with French names in parentheses).' : 'Réponds en français.';
       const fullPrompt = `${AGENT_SYSTEM}\n${langInstruction}\n\n${this.useLiveContext() ? this.contextBlock() : ''}\nQuestion: ${q}`;
-      const answer = await this.puter.aiChat(fullPrompt, { model: 'gpt-5-nano' });
+      const answer = await this.puter.aiChat(fullPrompt, { model: PUTER_MODEL });
       this.messages.update((list) => list.map((m) => (m.id === assistantId ? { ...m, text: answer } : m)));
     } catch (e: any) {
       const fallback = this.localAnswer(q);

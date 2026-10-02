@@ -1,39 +1,63 @@
-<section class="mx-auto max-w-3xl px-4 py-6 space-y-4">
-  <div>
-    <h1 class="text-2xl font-bold">{{ lang.t('agentTitle') }}</h1>
-    <p class="text-sm text-gray-600">{{ lang.t('agentSubtitle') }}</p>
-    @if (puter.lastError()) { <p class="mt-2 rounded-lg bg-red-50 border border-red-200 p-2 text-sm text-red-700">{{ puter.lastError() }}</p> }
-  </div>
+<section class="mx-auto max-w-3xl space-y-5 px-4 py-6 sm:py-8">
+  <header>
+    <h1 class="text-headline-medium font-bold tracking-tight text-on-surface">{{ lang.t('agentTitle') }}</h1>
+    <p class="mt-1 text-body-medium text-on-surface-variant">{{ lang.t('agentSubtitle') }}</p>
+    @if (puter.lastError()) {
+      <p class="mt-3 rounded-2xl bg-error-container px-4 py-3 text-body-small text-on-error-container">
+        {{ puter.lastError() }}
+      </p>
+    }
+  </header>
 
-  <div class="flex flex-wrap gap-2 text-sm">
+  <div class="flex flex-wrap gap-2" role="group">
     @for (q of exampleQuestions(); track q) {
-      <button (click)="askExample(q)" class="rounded-full border px-3 py-1 hover:bg-emerald-50">{{ q }}</button>
+      <app-chip (click)="askExample(q)">{{ q }}</app-chip>
     }
   </div>
 
-  <div class="space-y-3 rounded-xl border bg-white p-4 shadow-sm min-h-[300px]">
+  <div class="min-h-[320px] space-y-3 rounded-3xl bg-surface-container-low p-5 shadow-level-1">
     @for (m of agent.messages(); track m.id) {
-      <div [class]="m.role === 'user' ? 'ms-auto max-w-[85%] rounded-xl bg-emerald-700 text-white px-3 py-2 text-sm' : 'me-auto max-w-[90%] rounded-xl bg-gray-100 px-3 py-2 text-sm'">
-        <p class="whitespace-pre-wrap">{{ m.text }}</p>
-      </div>
+      @if (m.role === 'user') {
+        <div class="rise ms-auto max-w-[85%] rounded-3xl rounded-ee-md bg-primary px-4 py-3 text-body-medium text-on-primary shadow-level-1">
+          <p class="whitespace-pre-wrap">{{ m.text }}</p>
+        </div>
+      } @else {
+        <div class="rise me-auto max-w-[90%] rounded-3xl rounded-es-md bg-surface-container-high px-4 py-3 text-body-medium text-on-surface">
+          <p class="whitespace-pre-wrap">{{ m.text }}</p>
+        </div>
+      }
     } @empty {
-      <p class="text-sm text-gray-500">{{ lang.t('emptyConv') }}</p>
+      <p class="text-body-medium text-on-surface-variant">{{ lang.t('emptyConv') }}</p>
     }
-    @if (agent.isThinking()) { <p class="text-sm text-gray-500 animate-pulse">{{ lang.t('thinking') }}</p> }
+    @if (agent.isThinking()) {
+      <div class="me-auto flex items-center gap-2 rounded-3xl bg-surface-container-high px-4 py-3">
+        <span class="size-2 animate-bounce rounded-full bg-primary" aria-hidden="true"></span>
+        <span class="size-2 animate-bounce rounded-full bg-secondary [animation-delay:120ms]" aria-hidden="true"></span>
+        <span class="size-2 animate-bounce rounded-full bg-tertiary [animation-delay:240ms]" aria-hidden="true"></span>
+        <span class="pulse-soft ms-1 text-body-small text-on-surface-variant">{{ lang.t('thinking') }}</span>
+      </div>
+    }
   </div>
 
-  <form (submit)="send(); $event.preventDefault()" class="flex gap-2">
-    <div class="flex-1">
-      <input [formField]="chatForm.question" [placeholder]="lang.t('inputPh')" class="w-full rounded-lg border px-4 py-2 focus:outline-emerald-600" />
+  <form (submit)="send(); $event.preventDefault()" class="flex flex-wrap gap-2">
+    <div class="min-w-[240px] flex-1">
+      <input [formField]="chatForm.question" [placeholder]="lang.t('inputPh')" class="w-full" />
       @if (chatForm.question().touched() && chatForm.question().errors().length) {
-        <p class="mt-1 text-xs text-red-600">{{ chatForm.question().errors()[0].message }}</p>
+        <p class="mt-2 ps-4 text-body-small font-medium text-error">{{ chatForm.question().errors()[0].message }}</p>
       }
     </div>
-    <button type="submit" [disabled]="chatForm().invalid() || agent.isThinking()" class="rounded-lg bg-emerald-700 px-4 py-2 text-white font-semibold hover:bg-emerald-800 disabled:opacity-50">{{ lang.t('send') }}</button>
+    <app-button type="submit" [disabled]="chatForm().invalid() || agent.isThinking()">
+      {{ lang.t('send') }}
+    </app-button>
   </form>
 
-  <div class="flex items-center justify-between text-xs text-gray-500">
-    <label class="flex items-center gap-2"><input type="checkbox" [checked]="agent.useLiveContext()" (change)="agent.useLiveContext.set(!agent.useLiveContext())" /> {{ lang.t('injectCtx') }}</label>
-    <button (click)="agent.clear()" class="underline hover:text-gray-700">{{ lang.t('clearConv') }}</button>
-  </div>
+  <footer class="flex flex-wrap items-center justify-between gap-3 text-body-small text-on-surface-variant">
+    <label class="press inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-full px-3 hover:bg-on-surface/6">
+      <input type="checkbox" [checked]="agent.useLiveContext()"
+        (change)="agent.useLiveContext.set(!agent.useLiveContext())"
+        class="size-5 accent-[var(--color-primary)]" />
+      {{ lang.t('injectCtx') }}
+    </label>
+    <app-button variant="text" size="sm" (click)="agent.clear()">{{ lang.t('clearConv') }}</app-button>
+  </footer>
 </section>

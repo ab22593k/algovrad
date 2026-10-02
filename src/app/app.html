@@ -1,41 +1,114 @@
-<header class="sticky top-0 z-10 border-b bg-white/90 backdrop-blur">
-  <div class="mx-auto max-w-6xl px-4 py-3 flex flex-wrap items-center gap-3">
-    <a routerLink="/" class="flex items-center gap-2 font-bold text-lg">
-      <span class="rounded-lg bg-emerald-700 text-white px-2 py-1 text-sm">DZ</span>
-      AlgoVrad
-      <span class="hidden md:inline text-xs font-normal text-gray-500">{{ lang.t('tagline') }}</span>
+<a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:start-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-primary focus:px-5 focus:py-3 focus:text-on-primary">
+  {{ lang.t('skipToContent') }}
+</a>
+
+<!-- M3 Expressive top app bar -->
+<header class="sticky top-0 z-20 border-b border-outline-variant bg-surface-container/85 backdrop-blur-xl">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-3 px-4 py-3 sm:gap-4">
+    <a routerLink="/" class="press flex min-h-12 items-center gap-3 rounded-full ps-1 pe-3 hover:bg-on-surface/6">
+      <span class="press grid size-10 place-items-center rounded-xl bg-primary text-on-primary shadow-level-1"
+        style="transform-origin: center;">DZ</span>
+      <span class="flex flex-col leading-tight">
+        <span class="text-title-large font-semibold tracking-tight">AlgoVrad</span>
+        <span class="hidden text-body-small text-on-surface-variant md:block">{{ lang.t('tagline') }}</span>
+      </span>
     </a>
-    <nav class="flex items-center gap-1 text-sm font-medium">
-      <a routerLink="/" routerLinkActive="text-emerald-700" [routerLinkActiveOptions]="{exact:true}" class="px-3 py-1 rounded hover:bg-gray-100">{{ lang.t('home') }}</a>
-      <a routerLink="/ministers" routerLinkActive="text-emerald-700" class="px-3 py-1 rounded hover:bg-gray-100">{{ lang.t('ministers') }}</a>
-      <a routerLink="/radar" routerLinkActive="text-emerald-700" class="px-3 py-1 rounded hover:bg-gray-100">{{ lang.t('radar') }} @if (radar.unreadCount() > 0) { ({{ radar.unreadCount() }}) }</a>
-      <a routerLink="/agent" routerLinkActive="text-emerald-700" class="px-3 py-1 rounded hover:bg-gray-100">{{ lang.t('agent') }}</a>
+
+    <nav class="order-3 -mx-1 w-full overflow-x-auto md:order-none md:mx-0 md:w-auto" [attr.aria-label]="lang.t('navLabel')">
+      <ul class="flex items-center gap-1 px-1">
+        <li>
+          <a routerLink="/" routerLinkActive="bg-secondary-container text-on-secondary-container shadow-level-1"
+            [routerLinkActiveOptions]="{exact:true}"
+            class="press inline-flex min-h-11 items-center rounded-full px-4 text-label-large font-medium text-on-surface-variant hover:bg-on-surface/6">
+            {{ lang.t('home') }}
+          </a>
+        </li>
+        <li>
+          <a routerLink="/ministers" routerLinkActive="bg-secondary-container text-on-secondary-container shadow-level-1"
+            class="press inline-flex min-h-11 items-center rounded-full px-4 text-label-large font-medium text-on-surface-variant hover:bg-on-surface/6">
+            {{ lang.t('ministers') }}
+          </a>
+        </li>
+        <li>
+          <a routerLink="/radar" routerLinkActive="bg-secondary-container text-on-secondary-container shadow-level-1"
+            class="press inline-flex min-h-11 items-center rounded-full px-4 text-label-large font-medium text-on-surface-variant hover:bg-on-surface/6">
+            <span class="flex items-center gap-2">
+              {{ lang.t('radar') }}
+              @if (radar.unreadCount() > 0) {
+                <span class="grid min-w-6 place-items-center rounded-full bg-tertiary px-1.5 py-0.5 text-label-small font-bold text-on-tertiary">
+                  {{ radar.unreadCount() }}
+                </span>
+              }
+            </span>
+          </a>
+        </li>
+        <li>
+          <a routerLink="/agent" routerLinkActive="bg-secondary-container text-on-secondary-container shadow-level-1"
+            class="press inline-flex min-h-11 items-center rounded-full px-4 text-label-large font-medium text-on-surface-variant hover:bg-on-surface/6">
+            {{ lang.t('agent') }}
+          </a>
+        </li>
+      </ul>
     </nav>
-    <div class="ms-auto flex items-center gap-2 text-sm">
-      <div class="flex items-center rounded-lg border overflow-hidden" role="group" [attr.aria-label]="lang.t('langLabel')">
+
+    <div class="ms-auto flex items-center gap-2">
+      <!-- Language segmented control -->
+      <div class="flex items-center rounded-full border border-outline-variant bg-surface-container-low p-1"
+        role="group" [attr.aria-label]="lang.t('langLabel')">
         @for (l of langs; track l.id) {
           <button (click)="setLang(l.id)"
-            [class]="lang.lang() === l.id ? 'bg-emerald-700 text-white px-2 py-1 font-bold' : 'px-2 py-1 hover:bg-gray-100'"
-            [attr.aria-pressed]="lang.lang() === l.id">{{ l.short }}</button>
+            [attr.aria-pressed]="lang.lang() === l.id"
+            [attr.lang]="l.id"
+            [class]="lang.lang() === l.id
+              ? 'press min-h-9 rounded-full bg-primary px-3 text-label-medium font-bold text-on-primary shadow-level-1'
+              : 'press min-h-9 rounded-full px-3 text-label-medium font-medium text-on-surface-variant hover:bg-on-surface/8'">
+            {{ l.short }}
+          </button>
         }
       </div>
+
+      <!-- Dynamic color / theme toggle -->
+      <button (click)="theme.toggle()"
+        [attr.aria-label]="theme.resolved() === 'dark' ? lang.t('themeLight') : lang.t('themeDark')"
+        [attr.aria-pressed]="theme.resolved() === 'dark'"
+        [attr.title]="lang.t('themeLabel')"
+        class="press grid size-12 place-items-center rounded-full border border-outline-variant text-title-medium text-on-surface-variant hover:bg-on-surface/8">
+        @if (theme.resolved() === 'dark') {
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+        } @else {
+          <svg class="size-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z" />
+          </svg>
+        }
+      </button>
+
       @if (puter.signedIn()) {
-        <span class="hidden sm:inline text-gray-600">{{ puter.userName() }}</span>
-        <button (click)="toggleAuth()" class="rounded-lg border px-3 py-1 hover:bg-gray-50">{{ lang.t('logout') }}</button>
+        <app-button variant="outlined" size="sm" (click)="toggleAuth()">{{ lang.t('logout') }}</app-button>
       } @else {
-        <button (click)="toggleAuth()" class="rounded-lg bg-emerald-700 text-white px-3 py-1 font-semibold hover:bg-emerald-800">{{ lang.t('login') }}</button>
+        <app-button size="sm" (click)="toggleAuth()">{{ lang.t('login') }}</app-button>
       }
     </div>
   </div>
 </header>
 
-<main class="min-h-[70vh] bg-emerald-50/40">
+<main id="main" class="min-h-[70vh] bg-surface">
   <router-outlet />
 </main>
 
-<footer class="border-t bg-white">
-  <div class="mx-auto max-w-6xl px-4 py-4 text-xs text-gray-500 flex flex-wrap gap-2 items-center justify-between">
+<app-source-preview />
+
+<footer class="border-t border-outline-variant bg-surface-container-low">
+  <div class="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-6 text-body-small text-on-surface-variant">
     <span>{{ lang.t('footerSeed') }}</span>
-    <span>Powered by <a href="https://developer.puter.com" target="_blank" rel="noopener" class="text-emerald-700 underline">Puter</a> • puter.ai.chat • puter.kv • puter.net.fetch</span>
+    <span>
+      Powered by <a href="https://developer.puter.com" target="_blank" rel="noopener"
+        class="font-medium text-primary underline-offset-4 hover:underline">Puter</a>
+      · puter.ai.chat · puter.kv · puter.net.fetch
+    </span>
   </div>
 </footer>

@@ -1,3 +1,322 @@
-/* You can add global styles to this file, and also import other style files */
+/* ============================================================
+   AlgoVrad — Material Design 3 Expressive design tokens
+   Tailwind v4 (@theme) + dark scheme + motion + a11y
+   ============================================================ */
 
 @import 'tailwindcss';
+
+@theme {
+  /* ---------- Color roles (Algeria green identity) ---------- */
+  --color-primary: oklch(0.52 0.13 155);
+  --color-on-primary: oklch(0.99 0.005 155);
+  --color-primary-container: oklch(0.92 0.045 155);
+  --color-on-primary-container: oklch(0.26 0.06 155);
+
+  --color-secondary: oklch(0.55 0.1 205);
+  --color-on-secondary: oklch(0.99 0.005 205);
+  --color-secondary-container: oklch(0.93 0.035 205);
+  --color-on-secondary-container: oklch(0.24 0.05 205);
+
+  --color-tertiary: oklch(0.52 0.19 22);
+  --color-on-tertiary: oklch(0.99 0.005 22);
+  --color-tertiary-container: oklch(0.93 0.06 22);
+  --color-on-tertiary-container: oklch(0.28 0.11 22);
+
+  --color-success: oklch(0.55 0.14 150);
+  --color-success-container: oklch(0.93 0.05 150);
+  --color-on-success-container: oklch(0.26 0.06 150);
+
+  --color-error: oklch(0.5 0.2 27);
+  --color-on-error: oklch(0.99 0.005 27);
+  --color-error-container: oklch(0.93 0.06 27);
+  --color-on-error-container: oklch(0.3 0.12 27);
+
+  --color-surface: oklch(0.985 0.004 155);
+  --color-surface-dim: oklch(0.9 0.006 155);
+  --color-surface-bright: oklch(1 0 0);
+  --color-surface-container-lowest: oklch(1 0 0);
+  --color-surface-container-low: oklch(0.972 0.005 155);
+  --color-surface-container: oklch(0.955 0.006 155);
+  --color-surface-container-high: oklch(0.932 0.007 155);
+  --color-surface-container-highest: oklch(0.905 0.008 155);
+
+  --color-on-surface: oklch(0.21 0.02 155);
+  --color-on-surface-variant: oklch(0.42 0.025 155);
+  --color-outline: oklch(0.55 0.02 155);
+  --color-outline-variant: oklch(0.83 0.008 155);
+
+  /* ---------- Type scale (M3E) ---------- */
+  --text-display-large: 3.5625rem;
+  --text-display-medium: 2.8125rem;
+  --text-display-small: 2.25rem;
+  --text-headline-large: 2rem;
+  --text-headline-medium: 1.625rem;
+  --text-headline-small: 1.375rem;
+  --text-title-large: 1.25rem;
+  --text-title-medium: 1rem;
+  --text-title-small: 0.875rem;
+  --text-body-large: 1rem;
+  --text-body-medium: 0.875rem;
+  --text-body-small: 0.75rem;
+  --text-label-large: 0.875rem;
+  --text-label-medium: 0.75rem;
+  --text-label-small: 0.6875rem;
+
+  --leading-display: 1.1;
+  --leading-headline: 1.2;
+  --leading-title: 1.3;
+  --leading-body: 1.5;
+  --leading-label: 1.4;
+
+  /* ---------- Shape scale (M3E: friendly, larger corners) ---------- */
+  --radius-xs: 0.25rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-2xl: 2rem;
+  --radius-3xl: 2.75rem;
+  --radius-full: 9999px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-level-0: none;
+  --shadow-level-1: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-level-2: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+  --shadow-level-3: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-level-4: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-level-5: 0 20px 25px -5px rgb(0 0 0 / 0.12), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+
+  /* ---------- Motion ---------- */
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-standard-decelerate: cubic-bezier(0, 0, 0, 1);
+  --ease-standard-accelerate: cubic-bezier(0.3, 0, 1, 1);
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-emphasized-decelerate: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --ease-emphasized-accelerate: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-spring-soft: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  --duration-short-2: 100ms;
+  --duration-short-3: 150ms;
+  --duration-short-4: 200ms;
+  --duration-medium-1: 250ms;
+  --duration-medium-2: 300ms;
+  --duration-medium-3: 350ms;
+  --duration-medium-4: 400ms;
+  --duration-long-1: 450ms;
+}
+
+/* ============================================================
+   Dark scheme — semantic roles flip, utilities stay unchanged
+   (utilities resolve var(--color-*) at runtime)
+   ============================================================ */
+:root[data-theme='dark'] {
+  --color-primary: oklch(0.82 0.13 155);
+  --color-on-primary: oklch(0.26 0.06 155);
+  --color-primary-container: oklch(0.36 0.07 155);
+  --color-on-primary-container: oklch(0.9 0.045 155);
+
+  --color-secondary: oklch(0.8 0.09 205);
+  --color-on-secondary: oklch(0.24 0.05 205);
+  --color-secondary-container: oklch(0.35 0.05 205);
+  --color-on-secondary-container: oklch(0.9 0.035 205);
+
+  --color-tertiary: oklch(0.78 0.15 22);
+  --color-on-tertiary: oklch(0.28 0.11 22);
+  --color-tertiary-container: oklch(0.38 0.1 22);
+  --color-on-tertiary-container: oklch(0.91 0.06 22);
+
+  --color-success: oklch(0.8 0.13 150);
+  --color-success-container: oklch(0.36 0.06 150);
+  --color-on-success-container: oklch(0.9 0.05 150);
+
+  --color-error: oklch(0.75 0.16 27);
+  --color-on-error: oklch(0.3 0.12 27);
+  --color-error-container: oklch(0.38 0.11 27);
+  --color-on-error-container: oklch(0.92 0.06 27);
+
+  --color-surface: oklch(0.17 0.008 155);
+  --color-surface-dim: oklch(0.14 0.008 155);
+  --color-surface-bright: oklch(0.26 0.01 155);
+  --color-surface-container-lowest: oklch(0.12 0.008 155);
+  --color-surface-container-low: oklch(0.2 0.009 155);
+  --color-surface-container: oklch(0.23 0.01 155);
+  --color-surface-container-high: oklch(0.26 0.011 155);
+  --color-surface-container-highest: oklch(0.3 0.012 155);
+
+  --color-on-surface: oklch(0.92 0.008 155);
+  --color-on-surface-variant: oklch(0.78 0.018 155);
+  --color-outline: oklch(0.6 0.02 155);
+  --color-outline-variant: oklch(0.36 0.015 155);
+
+  --shadow-level-1: 0 1px 2px 0 rgb(0 0 0 / 0.4);
+  --shadow-level-2: 0 1px 3px 0 rgb(0 0 0 / 0.45), 0 1px 2px -1px rgb(0 0 0 / 0.4);
+  --shadow-level-3: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.45);
+  --shadow-level-4: 0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.45);
+  --shadow-level-5: 0 20px 25px -5px rgb(0 0 0 / 0.55), 0 8px 10px -6px rgb(0 0 0 / 0.5);
+}
+
+/* ============================================================
+   Expressive utilities
+   ============================================================ */
+
+/* Springy, transform-based interaction feedback (M3E motion) */
+@utility press {
+  transition-property: transform, box-shadow, background-color, border-color, color, opacity;
+  transition-duration: var(--duration-medium-2);
+  transition-timing-function: var(--ease-spring);
+}
+
+/* Elevated lift on hover for cards/surfaces */
+@utility elevate {
+  transition-property: transform, box-shadow;
+  transition-duration: var(--duration-medium-2);
+  transition-timing-function: var(--ease-spring-soft);
+}
+
+/* Accessible focus ring: 2px + 2px offset (WCAG 2.4.11) */
+@utility focus-ring {
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-full);
+  }
+}
+
+/* Minimum 48x48 touch target (WCAG 2.5.5 / M3) */
+@utility touch-target {
+  min-height: 3rem;
+  min-width: 3rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Slow "thinking"/scanning pulse for AI states */
+@utility pulse-soft {
+  animation: algovrad-pulse 1.6s var(--ease-standard) infinite;
+}
+
+@keyframes algovrad-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Staggered card entrance */
+@utility rise {
+  animation: algovrad-rise var(--duration-long-1) var(--ease-emphasized-decelerate) both;
+}
+
+@keyframes algovrad-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ============================================================
+   Base layer
+   ============================================================ */
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-surface);
+    color: var(--color-on-surface);
+    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic',
+      'Helvetica Neue', sans-serif;
+    line-height: var(--leading-body);
+    min-height: 100dvh;
+  }
+
+  /* Logical-property aware focus ring for RTL too */
+  :where(a, button, input, textarea, select, [tabindex]):focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-primary-container);
+    color: var(--color-on-primary-container);
+  }
+
+  /* M3 text-field: filled, no hard outline noise */
+  input[type='search'],
+  input[type='text'],
+  input[type='email'] {
+    background: var(--color-surface-container-high);
+    color: var(--color-on-surface);
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-full);
+    padding-inline: 1rem;
+    min-height: 3rem;
+    transition: border-color var(--duration-short-4) var(--ease-standard),
+      box-shadow var(--duration-short-4) var(--ease-standard);
+  }
+
+  input[type='search']:hover,
+  input[type='text']:hover {
+    border-color: var(--color-outline);
+  }
+
+  input[type='search']:focus,
+  input[type='text']:focus {
+    border-color: var(--color-primary);
+    box-shadow: inset 0 0 0 1px var(--color-primary);
+    outline: none;
+  }
+
+  input::placeholder {
+    color: var(--color-on-surface-variant);
+  }
+}
+
+/* ============================================================
+   Route / view transitions (Angular withViewTransitions)
+   ============================================================ */
+::view-transition-old(root) {
+  animation: algovrad-fade-out var(--duration-short-3) var(--ease-standard-accelerate) both;
+}
+
+::view-transition-new(root) {
+  animation: algovrad-fade-in var(--duration-medium-2) var(--ease-emphasized-decelerate) both;
+}
+
+@keyframes algovrad-fade-out {
+  to {
+    opacity: 0;
+    transform: scale(0.995);
+  }
+}
+
+@keyframes algovrad-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+/* ============================================================
+   Reduced motion — respect user preference
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -2,7 +2,7 @@ import { Service, computed, inject, signal } from '@angular/core';
 import { Minister, MinisterCategory } from './minister.model';
 import { SEED_MINISTERS } from './government-data';
 import { MINISTER_ROLE_I18N } from './i18n';
-import { Puter } from './puter';
+import { PUTER_MODEL, Puter } from './puter';
 
 export type GovStatus = 'seed' | 'refreshing' | 'live' | 'error';
 
@@ -70,7 +70,7 @@ export class GovernmentStore {
 Sources à prioriser : https://www.premier-ministre.gov.dz/ , https://www.presidence.dz/ , https://www.aps.dz/.
 Retourne UNIQUEMENT du JSON : [{"name":"...","roleFr":"...","category":"premier|ministre-etat|ministre|ministre-delegue|secretaire-etat|wali","isNew":false,"appointedAt":"2025-09-14","decree":"25-241"}].
 Inclus toujours appointedAt (date ISO YYYY-MM-DD de nomination) et decree. Si tu n'as pas accès au web, retourne exactement : [].`;
-      const raw = await this.puter.aiChat(prompt, { model: 'gpt-5-nano' });
+      const raw = await this.puter.aiChat(prompt, { model: PUTER_MODEL });
       const jsonStart = raw.indexOf('[');
       const jsonEnd = raw.lastIndexOf(']');
       if (jsonStart >= 0 && jsonEnd > jsonStart) {

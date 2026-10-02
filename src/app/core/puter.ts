@@ -4,6 +4,22 @@ declare global {
   }
 }
 
+/**
+ * Single source of truth for the AI model used by every Puter.ai call in the
+ * app (agent chat, radar scan, ministers re-check, preview translation).
+ * Change it here and every call site follows.
+ */
+export const PUTER_MODEL = 'deepseek-v4.1-flash';
+
+/** Silence the SDK's "Submit this app to the Puter App Store" console banner. */
+function silencePuterBanner(puter: any): void {
+  try {
+    if (puter && puter.quiet !== true) puter.quiet = true;
+  } catch {
+    /* non-critical */
+  }
+}
+
 import { Injectable, PLATFORM_ID, inject, signal } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 
@@ -18,21 +34,44 @@ export class Puter {
   readonly lastError = signal<string>('');
 
   private loadPromise: Promise<void> | null = null;
+  private static readonly SDK_URL = 'https://js.puter.com/v2/';
 
+  /**
+   * Lazily injects the Puter.js SDK on first USE (sign-in, AI chat, radar
+   * refresh, KV). Never call this on app startup: the SDK opens a socket.io
+   * connection to api.puter.com on load, and browsers (notably Firefox) log
+   * "can't establish a connection / interrupted while loading" + a benign
+   * "forbidden header Origin" warning from the XHR-polling fallback whenever
+   * that socket can't be established (tracking protection, adblocker, VPN,
+   * offline). Lazy loading keeps plain browsing silent; failures degrade to
+   * seed data via the existing fallbacks.
+   */
   ensureLoaded(): Promise<void> {
     if (!this.isBrowser) return Promise.resolve();
     if (typeof window !== 'undefined' && window.puter) {
       this.loaded.set(true);
+      silencePuterBanner(window.puter);
       return Promise.resolve();
     }
     if (this.loadPromise) return this.loadPromise;
     this.loadPromise = new Promise<void>((resolve) => {
+      // Dedupe: a tag may already be in flight (e.g. double call race).
+      const existing = document.querySelector<HTMLScriptElement>(
+        `script[src="${Puter.SDK_URL}"]`,
+      );
+      if (existing) {
+        existing.addEventListener('load', () => this.onSdkReady().finally(() => resolve()), { once: true });
+        existing.addEventListener('error', () => {
+          this.lastError.set('Puter.js failed to load. Check network.');
+          resolve();
+        }, { once: true });
+        return;
+      }
       const script = document.createElement('script');
-      script.src = 'https://js.puter.com/v2/';
+      script.src = Puter.SDK_URL;
       script.async = true;
       script.onload = () => {
-        this.loaded.set(true);
-        this.refreshAuthState().finally(() => resolve());
+        this.onSdkReady().finally(() => resolve());
       };
       script.onerror = () => {
         this.lastError.set('Puter.js failed to load. Check network.');
@@ -43,6 +82,12 @@ export class Puter {
       setTimeout(() => resolve(), 8000);
     });
     return this.loadPromise;
+  }
+
+  private async onSdkReady(): Promise<void> {
+    this.loaded.set(true);
+    silencePuterBanner(window.puter);
+    await this.refreshAuthState();
   }
 
   get api(): any | null {
@@ -99,7 +144,7 @@ export class Puter {
     await this.ensureLoaded();
     const puter = this.api;
     if (!puter?.ai) throw new Error('Puter AI unavailable. Vérifiez la connexion et https://js.puter.com/v2/.');
-    const res = await puter.ai.chat(prompt, { model: opts.model ?? 'gpt-5-nano' });
+    const res = await puter.ai.chat(prompt, { model: opts.model ?? PUTER_MODEL, normalize: true });
     // Normalized + legacy shapes
     const msg = res?.message;
     if (typeof msg?.content === 'string') return msg.content;
@@ -118,7 +163,7 @@ export class Puter {
     await this.ensureLoaded();
     const puter = this.api;
     if (!puter?.ai) throw new Error('Puter AI unavailable.');
-    const resp = await puter.ai.chat(messages, { model: opts.model ?? 'gpt-5-nano', stream: true });
+    const resp = await puter.ai.chat(messages, { model: opts.model ?? PUTER_MODEL, stream: true });
     let full = '';
     for await (const part of resp) {
       const t = part?.text ?? part?.content ?? '';

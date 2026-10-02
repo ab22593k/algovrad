@@ -1,0 +1,4 @@
+# Bun is the single source of truth for install, build, test and run.
+# Usage: bun install | bun run dev | bun run build | bun run start | bun run test
+# Bun writes bun.lock (the ONE lockfile — package-lock.json was removed).
+[install]

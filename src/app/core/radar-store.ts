@@ -2,7 +2,7 @@ import { Service, computed, inject, signal } from '@angular/core';
 import { RadarItem, RadarKind } from './minister.model';
 import { SEED_RADAR } from './government-data';
 import { RADAR_I18N } from './i18n';
-import { Puter } from './puter';
+import { PUTER_MODEL, Puter } from './puter';
 
 @Service()
 export class RadarStore {
@@ -60,7 +60,7 @@ export class RadarStore {
 Sources : presidence.dz, aps.dz, joradp.dz, anep.com.dz, premier-ministre.gov.dz.
 Retourne UNIQUEMENT du JSON : [{"kind":"decret|communique|appel-offre|conseil-ministres|nomination","titleFr":"...","summaryFr":"...","source":"...","sourceUrl":"https://...","publishedAt":"2026-..-..","tags":[]}].
 Sinon retourne [].`;
-      const raw = await this.puter.aiChat(prompt, { model: 'gpt-5-nano' });
+      const raw = await this.puter.aiChat(prompt, { model: PUTER_MODEL });
       const s = raw.indexOf('[');
       const e = raw.lastIndexOf(']');
       let added = 0;

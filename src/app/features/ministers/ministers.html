@@ -1,67 +1,97 @@
-<section class="mx-auto max-w-6xl px-4 py-6 space-y-4">
-  <div class="flex flex-wrap items-end justify-between gap-3">
-    <div>
-      <h1 class="text-2xl font-bold">{{ lang.t('govTitle') }} {{ store.totalCount() }} {{ lang.t('ministersWord') }}</h1>
-      <p class="text-sm text-gray-600">
-        {{ lang.t('formationDate') }} <time [attr.datetime]="formationDate">{{ lang.formatDate(formationDate) }}</time>
-        • {{ lang.t('decreeRef') }} n°{{ decreeRef }}
+<section class="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:py-8">
+  <header class="flex flex-wrap items-end justify-between gap-4">
+    <div class="min-w-0">
+      <h1 class="text-headline-medium font-bold tracking-tight text-on-surface">
+        {{ lang.t('govTitle') }} {{ store.totalCount() }} {{ lang.t('ministersWord') }}
+      </h1>
+      <p class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 text-body-medium text-on-surface-variant">
+        <span>{{ lang.t('formationDate') }}</span>
+        <time [attr.datetime]="formationDate" class="font-medium">{{ lang.formatDate(formationDate) }}</time>
+        <span aria-hidden="true">·</span>
+        <span>{{ lang.t('decreeRef') }} n°{{ decreeRef }}</span>
       </p>
-      <p class="text-sm text-gray-600">{{ store.lastChecked() }} • {{ store.note() }}</p>
-      <p class="mt-1 text-xs text-gray-500">{{ lang.t('govDecreeNote') }}</p>
+      <p class="mt-1 text-body-small text-on-surface-variant">{{ store.lastChecked() }} · {{ store.note() }}</p>
+      <p class="mt-1 text-body-small text-on-surface-variant">{{ lang.t('govDecreeNote') }}</p>
     </div>
-    <button (click)="store.refreshViaPuter()" [disabled]="store.status() === 'refreshing'"
-      class="rounded-lg bg-emerald-700 px-4 py-2 text-white font-semibold hover:bg-emerald-800 disabled:opacity-50">
-      @if (store.status() === 'refreshing') { {{ lang.t('checking') }} } @else { {{ lang.t('recheck') }} }
-    </button>
-  </div>
 
-  <div class="flex flex-wrap gap-2">
+    <app-button (click)="store.refreshViaPuter()" [disabled]="store.status() === 'refreshing'">
+      @if (store.status() === 'refreshing') {
+        {{ lang.t('checking') }}
+      } @else {
+        {{ lang.t('recheck') }}
+      }
+    </app-button>
+  </header>
+
+  <div class="flex flex-wrap items-center gap-2" role="group">
     @for (c of store.categoryIds(); track c) {
-      <button (click)="store.setCategory(c)"
-        [class]="store.category() === c ? 'rounded-full bg-emerald-700 text-white px-3 py-1 text-sm' : 'rounded-full border px-3 py-1 text-sm hover:bg-emerald-50'">
+      <app-chip [selected]="store.category() === c" (click)="store.setCategory(c)">
         {{ lang.categoryLabel(c) }}
-      </button>
+      </app-chip>
     }
-    <button (click)="store.toggleOnlyNew()"
-      [class]="store.onlyNew() ? 'rounded-full bg-amber-500 text-white px-3 py-1 text-sm' : 'rounded-full border px-3 py-1 text-sm'">
+    <app-chip tone="accent" [selected]="store.onlyNew()" (click)="store.toggleOnlyNew()">
       {{ lang.t('onlyNew') }} ({{ store.newCount() }})
-    </button>
+    </app-chip>
   </div>
 
   <input #q type="search" [placeholder]="lang.t('searchMinistersPh')"
-    [value]="store.query()" (input)="onSearch(q.value)"
-    class="w-full rounded-lg border px-4 py-2 focus:outline-emerald-600" />
+    [value]="store.query()" (input)="onSearch(q.value)" class="w-full" />
 
   @if (store.filtered().length === 0) {
-    <p class="rounded-lg bg-amber-50 border border-amber-200 p-4 text-sm">{{ lang.t('noResult') }}</p>
+    <p class="rounded-2xl bg-tertiary-container px-5 py-4 text-body-medium text-on-tertiary-container">
+      {{ lang.t('noResult') }}
+    </p>
   }
 
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-3">
+  <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
     @for (m of store.filtered(); track m.id) {
-      <article class="rounded-xl border bg-white p-4 shadow-sm hover:shadow">
+      <li class="elevate flex flex-col rounded-2xl bg-surface-container-low p-5 shadow-level-1 hover:-translate-y-1 hover:shadow-level-3">
         <div class="flex items-start justify-between gap-2">
-          <h2 class="font-bold">{{ m.name }}</h2>
-          @if (m.isNew) { <span class="rounded-full bg-amber-100 text-amber-800 px-2 py-0.5 text-xs font-bold">{{ lang.t('newBadge') }}</span> }
+          <h2 class="text-title-medium font-semibold text-on-surface">{{ m.name }}</h2>
+          @if (m.isNew) {
+            <span class="press shrink-0 rounded-full bg-tertiary-container px-3 py-1 text-label-small font-bold text-on-tertiary-container">
+              {{ lang.t('newBadge') }}
+            </span>
+          }
         </div>
-        <p class="mt-1 text-sm text-gray-700">{{ lang.ministerRole(m) }}</p>
-        <p class="mt-2 text-xs text-gray-600">
-          {{ lang.t('appointedOn') }} <time [attr.datetime]="m.appointedAt">{{ lang.formatDate(m.appointedAt) }}</time>
-          @if (m.decree) { • {{ lang.t('decreeRef') }} n°{{ m.decree }} }
-        </p>
-        <p class="mt-1 text-xs text-gray-500">{{ lang.categoryLabel(m.category) }} @if (m.statusNote) { • {{ m.statusNote }} }</p>
-        @if (m.ministryUrl) {
-          <a [href]="m.ministryUrl" target="_blank" rel="noopener" class="mt-2 inline-block text-sm text-emerald-700 hover:underline">{{ lang.t('ministrySite') }}</a>
-        }
-      </article>
-    }
-  </div>
 
-  <div class="rounded-xl bg-gray-50 border p-4 text-xs text-gray-600">
-    <p class="font-semibold">{{ lang.t('howVerify') }}</p>
-    <ol class="list-decimal ms-5 mt-1 space-y-1">
+        <p class="mt-2 text-body-medium text-on-surface">{{ lang.ministerRole(m) }}</p>
+
+        <dl class="mt-4 grid gap-1 text-body-small text-on-surface-variant">
+          <div class="flex flex-wrap gap-x-2">
+            <dt class="font-semibold">{{ lang.t('appointedOn') }}</dt>
+            <dd>
+              <time [attr.datetime]="m.appointedAt">{{ lang.formatDate(m.appointedAt) }}</time>
+              @if (m.decree) { · {{ lang.t('decreeRef') }} n°{{ m.decree }} }
+            </dd>
+          </div>
+          <div class="flex flex-wrap gap-x-2">
+            <dt class="font-semibold">{{ lang.categoryLabel(m.category) }}</dt>
+            @if (m.statusNote) { <dd>· {{ m.statusNote }}</dd> }
+          </div>
+        </dl>
+
+        @if (m.ministryUrl) {
+          <div class="mt-4 flex flex-wrap items-center gap-2">
+            <app-button variant="tonal" size="sm" (click)="preview.open(m.ministryUrl, m.name)">
+              {{ lang.t('previewButton') }}
+            </app-button>
+            <a [href]="m.ministryUrl" target="_blank" rel="noopener"
+              class="press inline-flex min-h-10 items-center rounded-full px-4 text-label-medium font-medium text-primary hover:bg-primary/8">
+              {{ lang.t('ministrySite') }}
+            </a>
+          </div>
+        }
+      </li>
+    }
+  </ul>
+
+  <aside class="rounded-2xl bg-surface-container p-6 text-body-small text-on-surface-variant">
+    <h2 class="text-title-small font-semibold text-on-surface">{{ lang.t('howVerify') }}</h2>
+    <ol class="mt-3 grid gap-2 ps-5 [counter-reset:step] sm:grid-cols-3">
       <li>{{ lang.t('step1') }}</li>
       <li>{{ lang.t('step2') }}</li>
       <li>{{ lang.t('step3') }}</li>
     </ol>
-  </div>
+  </aside>
 </section>

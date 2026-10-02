@@ -3,10 +3,12 @@ import { form, FormField, required, minLength, submit } from '@angular/forms/sig
 import { GovAgent } from '../../core/agent';
 import { Puter } from '../../core/puter';
 import { LanguageStore } from '../../core/language-store';
+import { Button } from '../../shared/ui/button';
+import { Chip } from '../../shared/ui/chip';
 
 @Component({
   selector: 'app-agent-chat',
-  imports: [FormField],
+  imports: [FormField, Button, Chip],
   templateUrl: './agent-chat.html',
 })
 export class AgentChat {

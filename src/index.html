@@ -7,7 +7,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="AlgoVrad : tous les ministres algériens (Gouvernement Sifi Ghrieb) + radar Puter.js des nouveaux décrets, règles et appels d'offres.">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
-  <script src="https://js.puter.com/v2/"></script>
+  <!-- NOTE: Puter.js is NOT loaded here on purpose. The Puter service injects
+    https://js.puter.com/v2/ lazily on the first user-triggered Puter action
+    (sign-in, AI chat, radar refresh). Loading it eagerly made its internal
+    socket.io client dial wss://api.puter.com during page load, which Firefox
+    reports as "connection interrupted / can't establish a connection" noise. -->
 </head>
 <body>
   <app-root></app-root>
