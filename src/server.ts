@@ -78,17 +78,38 @@ const PREVIEW_TTL_MS = 10 * 60 * 1000;
 
 function decodeEntities(s: string): string {
   const entities: Record<string, string> = {
-    nbsp: ' ', amp: '&', lt: '<', gt: '>', quot: '"', '#39': "'",
-    eacute: 'é', egrave: 'è', ecirc: 'ê', euml: 'ë',
-    agrave: 'à', acirc: 'â', ccedil: 'ç', icirc: 'î', ocirc: 'ô',
-    ucirc: 'û', ugrave: 'ù', laquo: '«', raquo: '»',
-    rsquo: '’', lsquo: '‘', ndash: '–', mdash: '—', hellip: '…',
+    nbsp: ' ',
+    amp: '&',
+    lt: '<',
+    gt: '>',
+    quot: '"',
+    '#39': "'",
+    eacute: 'é',
+    egrave: 'è',
+    ecirc: 'ê',
+    euml: 'ë',
+    agrave: 'à',
+    acirc: 'â',
+    ccedil: 'ç',
+    icirc: 'î',
+    ocirc: 'ô',
+    ucirc: 'û',
+    ugrave: 'ù',
+    laquo: '«',
+    raquo: '»',
+    rsquo: '’',
+    lsquo: '‘',
+    ndash: '–',
+    mdash: '—',
+    hellip: '…',
   };
   return s.replace(/&([a-zA-Z#0-9]+);/g, (m, name: string) => entities[name] ?? ' ');
 }
 
 function extractPreview(html: string): { title: string; text: string } {
-  const title = decodeEntities(html.match(/<title[^>]*>([\s\S]{0,300})<\/title>/i)?.[1] ?? '').trim();
+  const title = decodeEntities(
+    html.match(/<title[^>]*>([\s\S]{0,300})<\/title>/i)?.[1] ?? '',
+  ).trim();
   const noScripts = html
     .replace(/<script[\s\S]*?<\/script\s*>/gi, ' ')
     .replace(/<style[\s\S]*?<\/style\s*>/gi, ' ');
@@ -129,27 +150,69 @@ app.get('/api/preview', async (req, res) => {
     res.json({ ...(hit.body as object), cached: true });
     return;
   }
-  try {
+  const FETCH_HEADERS: Record<string, string> = {
+    'user-agent':
+      'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124 Safari/537.36 AlgoVrad/1.0',
+    accept: 'text/html,application/xhtml+xml',
+    'accept-language': 'fr,ar;q=0.9,en;q=0.8',
+  };
+
+  const attempt = async (insecure: boolean): Promise<Response> => {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 12000);
-    const upstream = await fetch(target.href, {
-      signal: ctrl.signal,
-      redirect: 'follow',
-      headers: { 'user-agent': 'AlgoVrad-preview/1.0 (+https://developer.puter.com)' },
-    });
-    clearTimeout(timer);
-    if (!upstream.ok) {
-      res.status(502).json({ error: `Upstream responded ${upstream.status}.` });
+    const timer = setTimeout(() => ctrl.abort(), 15000);
+    try {
+      return await fetch(target.href, {
+        signal: ctrl.signal,
+        redirect: 'follow',
+        headers: FETCH_HEADERS,
+        // Several Algerian .gov.dz portals serve an incomplete certificate chain
+        // (e.g. me.gov.dz). We retry once without verification, but ONLY for
+        // allowlisted hosts and ONLY after a strict attempt failed. The UI is
+        // told when this happened via `tlsFallback`.
+        ...(insecure ? { tls: { rejectUnauthorized: false } } : {}),
+      } as RequestInit);
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  let upstream: Response;
+  let tlsFallback = false;
+  try {
+    upstream = await attempt(false);
+  } catch (strictErr) {
+    try {
+      upstream = await attempt(true);
+      tlsFallback = true;
+    } catch (looseErr) {
+      const msg =
+        looseErr instanceof Error ? `${looseErr.name}: ${looseErr.message}` : 'Fetch failed.';
+      // Distinguish a timeout from a transport/TLS failure so the UI can say so.
+      const isAbort =
+        (looseErr as { name?: string })?.name === 'AbortError' || msg.includes('abort');
+      res.status(isAbort ? 504 : 502).json({
+        error: isAbort ? 'Upstream timed out after 15s.' : `Cannot reach host: ${msg}`,
+      });
       return;
     }
-    const html = await upstream.text();
-    const { title, text } = extractPreview(html);
-    const body = { url: target.href, title, text, fetchedAt: new Date().toISOString(), cached: false };
-    previewCache.set(key, { at: Date.now(), body });
-    res.json(body);
-  } catch (e) {
-    res.status(504).json({ error: e instanceof Error ? e.message : 'Fetch failed.' });
   }
+
+  if (!upstream.ok) {
+    res.status(502).json({ error: `Upstream responded ${upstream.status}.` });
+    return;
+  }
+  const html = await upstream.text();
+  const { title, text } = extractPreview(html);
+  const body = {
+    url: target.href,
+    title,
+    text,
+    fetchedAt: new Date().toISOString(),
+    cached: false,
+    tlsFallback,
+  };
+  previewCache.set(key, { at: Date.now(), body });
+  res.json(body);
 });
 
 /**
@@ -181,9 +244,7 @@ app.use(
 app.use((req, res, next) => {
   angularApp
     .handle(req)
-    .then((response) =>
-      response ? writeResponseToNodeResponse(response, res) : next(),
-    )
+    .then((response) => (response ? writeResponseToNodeResponse(response, res) : next()))
     .catch(next);
 });
 

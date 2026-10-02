@@ -8,6 +8,8 @@
     "build": "bunx ng build",
     "watch": "bunx ng build --watch --configuration development",
     "test": "bunx ng test",
+    "format": "bunx prettier --write .",
+    "format:check": "bunx prettier --check .",
     "serve:ssr": "bun dist/algovrad/server/server.mjs",
     "serve": "bun run build && bun run serve:ssr",
     "preview": "bun run serve"

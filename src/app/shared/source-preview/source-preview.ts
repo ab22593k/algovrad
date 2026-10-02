@@ -17,7 +17,11 @@ export class SourcePreviewDialog {
     // dialog open, so the preview always follows the chosen language.
     effect(() => {
       const l = this.lang.lang();
-      if (this.preview.isOpen() && this.preview.status() === 'ready' && this.preview.translatedLang() !== l) {
+      if (
+        this.preview.isOpen() &&
+        this.preview.status() === 'ready' &&
+        this.preview.translatedLang() !== l
+      ) {
         void this.preview.autoTranslateIfNeeded();
       }
     });

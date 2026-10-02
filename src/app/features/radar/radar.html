@@ -1,10 +1,14 @@
 <section class="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:py-8">
   <header class="flex flex-wrap items-end justify-between gap-4">
     <div class="min-w-0">
-      <h1 class="flex flex-wrap items-center gap-3 text-headline-medium font-bold tracking-tight text-on-surface">
+      <h1
+        class="flex flex-wrap items-center gap-3 text-headline-medium font-bold tracking-tight text-on-surface"
+      >
         {{ lang.t('radarTitle') }}
         @if (store.unreadCount() > 0) {
-          <span class="rounded-full bg-tertiary px-3 py-1 text-label-small font-bold text-on-tertiary">
+          <span
+            class="rounded-full bg-tertiary px-3 py-1 text-label-small font-bold text-on-tertiary"
+          >
             {{ store.unreadCount() }} new
           </span>
         }
@@ -13,14 +17,22 @@
         {{ lang.t('updatedOn') }}: {{ store.lastCheck() }}
       </p>
       @if (store.message()) {
-        <p class="mt-3 rounded-2xl bg-primary-container px-4 py-3 text-body-small text-on-primary-container">
+        <p
+          class="mt-3 rounded-2xl bg-primary-container px-4 py-3 text-body-small text-on-primary-container"
+        >
           {{ store.message() }}
         </p>
       }
     </div>
 
     <div class="flex flex-wrap gap-2">
-      <app-button variant="outlined" (click)="store.markAllRead()">{{ lang.t('markRead') }}</app-button>
+      <app-chip [selected]="store.webSearch()" (click)="store.webSearch.set(!store.webSearch())">
+        <span aria-hidden="true">🌐</span>
+        {{ store.webSearch() ? lang.t('webSearchOn') : lang.t('webSearchOff') }}
+      </app-chip>
+      <app-button variant="outlined" (click)="store.markAllRead()">{{
+        lang.t('markRead')
+      }}</app-button>
       <app-button (click)="store.checkForUpdates()" [disabled]="store.isChecking()">
         @if (store.isChecking()) {
           <span class="pulse-soft">{{ lang.t('scanning') }}</span>
@@ -37,51 +49,118 @@
         {{ lang.kindLabel(k) }}
       </app-chip>
     }
+    <app-chip
+      tone="accent"
+      [selected]="store.opportunityOnly()"
+      (click)="store.toggleOpportunities()"
+    >
+      ⚡ {{ lang.t('opportunities') }} ({{ store.opportunityCount() }})
+    </app-chip>
   </div>
 
-  <input #s type="search" [placeholder]="lang.t('filterPh')"
-    [value]="store.search()" (input)="store.setSearch(s.value)" class="w-full" />
+  <p class="rounded-2xl bg-surface-container px-4 py-3 text-body-small text-on-surface-variant">
+    {{ lang.t('opportunitiesHint') }}
+    @if (store.webSearch()) {
+      · {{ lang.t('webSearchHint') }}
+    }
+  </p>
+
+  <input
+    #s
+    type="search"
+    [placeholder]="lang.t('filterPh')"
+    [value]="store.search()"
+    (input)="store.setSearch(s.value)"
+    class="w-full"
+  />
 
   <ul class="grid gap-4">
     @for (it of store.filtered(); track it.id) {
-      <li class="elevate rounded-2xl bg-surface-container-low p-5 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3">
+      <li
+        class="elevate rounded-2xl bg-surface-container-low p-5 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3"
+      >
         <div class="flex flex-wrap items-center gap-2">
-          <span class="rounded-full bg-secondary-container px-3 py-1 text-label-small font-bold text-on-secondary-container">
+          <span
+            class="rounded-full bg-secondary-container px-3 py-1 text-label-small font-bold text-on-secondary-container"
+          >
             {{ lang.kindLabel(it.kind) }}
           </span>
-          <span class="rounded-full bg-surface-container-high px-3 py-1 text-label-small font-medium text-on-surface-variant">
+          <span
+            class="rounded-full bg-surface-container-high px-3 py-1 text-label-small font-medium text-on-surface-variant"
+          >
             {{ lang.t('publishedOn') }}
-            <time [attr.datetime]="it.publishedAt" class="font-bold">{{ lang.formatDate(it.publishedAt) }}</time>
+            <time [attr.datetime]="it.publishedAt" class="font-bold">{{
+              lang.formatDate(it.publishedAt)
+            }}</time>
             <span class="opacity-60">({{ it.publishedAt }})</span>
           </span>
           <span class="text-body-small text-on-surface-variant">{{ it.source }}</span>
+          @if (it.ref) {
+            <span
+              class="rounded-full bg-surface-container-high px-3 py-1 font-mono text-label-small text-on-surface-variant"
+            >
+              {{ it.ref }}
+            </span>
+          }
+          @if (it.opportunity) {
+            <span
+              class="rounded-full bg-success-container px-3 py-1 text-label-small font-bold text-on-success-container"
+            >
+              ⚡ {{ lang.t('opportunityBadge') }}
+            </span>
+          }
           @if (it.isNew) {
-            <span class="rounded-full bg-tertiary-container px-3 py-1 text-label-small font-bold text-on-tertiary-container">
+            <span
+              class="rounded-full bg-tertiary-container px-3 py-1 text-label-small font-bold text-on-tertiary-container"
+            >
               {{ lang.t('newDrop') }}
             </span>
           }
         </div>
 
-        <h2 class="mt-3 text-title-large font-semibold text-on-surface">{{ lang.radarTitle(it) }}</h2>
-        <p class="mt-2 max-w-[70ch] text-body-medium text-on-surface-variant">{{ lang.radarSummary(it) }}</p>
+        @if (it.client) {
+          <p class="mt-3 text-body-small font-medium text-on-surface-variant">
+            {{ lang.t('clientLabel') }}: <span class="text-on-surface">{{ it.client }}</span>
+          </p>
+        }
+
+        <h2 class="mt-2 text-title-large font-semibold text-on-surface">
+          {{ lang.radarTitle(it) }}
+        </h2>
+        <p class="mt-2 max-w-[70ch] text-body-medium text-on-surface-variant">
+          {{ lang.radarSummary(it) }}
+        </p>
 
         <div class="mt-4 flex flex-wrap items-center gap-2">
           @for (t of it.tags; track t) {
-            <span class="rounded-full bg-surface-container-high px-2.5 py-1 text-label-small text-on-surface-variant">#{{ t }}</span>
+            <span
+              class="rounded-full bg-surface-container-high px-2.5 py-1 text-label-small text-on-surface-variant"
+              >#{{ t }}</span
+            >
           }
           <div class="ms-auto flex flex-wrap gap-2">
-            <app-button variant="tonal" size="sm" (click)="preview.open(it.sourceUrl, lang.radarTitle(it))">
+            <app-button
+              variant="tonal"
+              size="sm"
+              (click)="preview.open(it.sourceUrl, lang.radarTitle(it))"
+            >
               {{ lang.t('previewButton') }}
             </app-button>
-            <a [href]="it.sourceUrl" target="_blank" rel="noopener"
-              class="press inline-flex min-h-10 items-center rounded-full px-4 text-label-medium font-semibold text-primary hover:bg-primary/8">
+            <a
+              [href]="it.sourceUrl"
+              target="_blank"
+              rel="noopener"
+              class="press inline-flex min-h-10 items-center rounded-full px-4 text-label-medium font-semibold text-primary hover:bg-primary/8"
+            >
               {{ lang.t('officialSource') }}
             </a>
           </div>
         </div>
       </li>
     } @empty {
-      <li class="rounded-2xl bg-tertiary-container px-5 py-4 text-body-medium text-on-tertiary-container">
+      <li
+        class="rounded-2xl bg-tertiary-container px-5 py-4 text-body-medium text-on-tertiary-container"
+      >
         {{ lang.t('noSignal') }}
       </li>
     }
@@ -95,18 +174,32 @@
       @for (src of sources; track src.id) {
         <li class="rounded-xl bg-surface-container-low p-4">
           <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded-full bg-secondary-container px-2.5 py-1 text-label-small font-bold text-on-secondary-container">
+            <span
+              class="rounded-full bg-secondary-container px-2.5 py-1 text-label-small font-bold text-on-secondary-container"
+            >
               {{ src.kind }}
             </span>
-            <a [href]="src.url" target="_blank" rel="noopener"
-              class="press rounded text-title-small font-semibold text-primary underline-offset-4 hover:underline">
+            <a
+              [href]="src.url"
+              target="_blank"
+              rel="noopener"
+              class="press rounded text-title-small font-semibold text-primary underline-offset-4 hover:underline"
+            >
               {{ lang.sourceLabel(src) }}
             </a>
           </div>
           <p class="mt-2 text-body-small">{{ lang.sourceDescription(src) }}</p>
-          <p class="mt-1"><span class="font-semibold">{{ lang.t('watchLabel') }}:</span> {{ lang.sourceWatch(src) }}</p>
+          <p class="mt-1">
+            <span class="font-semibold">{{ lang.t('watchLabel') }}:</span>
+            {{ lang.sourceWatch(src) }}
+          </p>
           <p class="mt-1 opacity-80">{{ lang.sourceFrequency(src) }} · {{ src.languages }}</p>
-          <app-button class="mt-3" variant="text" size="sm" (click)="preview.open(src.url, lang.sourceLabel(src))">
+          <app-button
+            class="mt-3"
+            variant="text"
+            size="sm"
+            (click)="preview.open(src.url, lang.sourceLabel(src))"
+          >
             {{ lang.t('previewButton') }}
           </app-button>
         </li>

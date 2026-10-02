@@ -26,7 +26,9 @@ export class ThemeStore {
       try {
         const saved = localStorage.getItem(KEY) as ThemeMode | null;
         if (saved === 'light' || saved === 'dark' || saved === 'system') this.mode.set(saved);
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       const mq = window.matchMedia?.('(prefers-color-scheme: dark)');
       if (mq) {
         this.systemPrefersDark.set(mq.matches);
@@ -39,7 +41,9 @@ export class ThemeStore {
       if (!this.isBrowser) return;
       try {
         localStorage.setItem(KEY, this.mode());
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
       const root = document.documentElement;
       root.dataset['theme'] = r;
       root.style.colorScheme = r;

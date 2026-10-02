@@ -1,17 +1,37 @@
 @if (preview.isOpen()) {
-  <div (click)="onBackdrop($event)"
-    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm" role="dialog" aria-modal="true"
-    [attr.aria-label]="preview.label()">
-    <div class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-surface-container-low p-6 shadow-level-5 sm:p-8">
+  <div
+    (click)="onBackdrop($event)"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="preview.label()"
+  >
+    <div
+      class="w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-3xl bg-surface-container-low p-6 shadow-level-5 sm:p-8"
+    >
       <header class="flex items-start justify-between gap-3">
         <div class="min-w-0">
-          <p class="text-label-medium uppercase tracking-[0.18em] text-primary">{{ lang.t('previewEyebrow') }}</p>
-          <h2 class="mt-1 text-headline-small font-semibold text-on-surface">{{ preview.label() }}</h2>
+          <p class="text-label-medium uppercase tracking-[0.18em] text-primary">
+            {{ lang.t('previewEyebrow') }}
+          </p>
+          <h2 class="mt-1 text-headline-small font-semibold text-on-surface">
+            {{ preview.label() }}
+          </h2>
         </div>
-        <button (click)="preview.close()" [attr.aria-label]="lang.t('previewClose')"
-          class="press grid size-12 shrink-0 place-items-center rounded-full border border-outline-variant text-title-medium text-on-surface-variant hover:bg-on-surface/8">
-          <svg class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-            stroke-linecap="round" aria-hidden="true">
+        <button
+          (click)="preview.close()"
+          [attr.aria-label]="lang.t('previewClose')"
+          class="press grid size-12 shrink-0 place-items-center rounded-full border border-outline-variant text-title-medium text-on-surface-variant hover:bg-on-surface/8"
+        >
+          <svg
+            class="size-5"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            aria-hidden="true"
+          >
             <path d="M18 6 6 18M6 6l12 12" />
           </svg>
         </button>
@@ -21,11 +41,15 @@
         @case ('loading') {
           <div class="mt-6 flex items-center gap-3 rounded-2xl bg-surface-container p-4">
             <span class="size-3 animate-ping rounded-full bg-primary" aria-hidden="true"></span>
-            <p class="pulse-soft text-body-medium text-on-surface-variant">{{ lang.t('previewLoading') }}</p>
+            <p class="pulse-soft text-body-medium text-on-surface-variant">
+              {{ lang.t('previewLoading') }}
+            </p>
           </div>
         }
         @case ('error') {
-          <p class="mt-6 rounded-2xl bg-error-container px-5 py-4 text-body-medium text-on-error-container">
+          <p
+            class="mt-6 rounded-2xl bg-error-container px-5 py-4 text-body-medium text-on-error-container"
+          >
             {{ lang.t('previewFailed') }} {{ preview.error() }}
           </p>
         }
@@ -34,17 +58,35 @@
             @if (d.title) {
               <p class="mt-6 text-title-medium font-semibold text-on-surface">{{ d.title }}</p>
             }
-            <p class="mt-1 flex flex-wrap items-center gap-x-2 text-body-small text-on-surface-variant">
+            <p
+              class="mt-1 flex flex-wrap items-center gap-x-2 text-body-small text-on-surface-variant"
+            >
               <time [attr.datetime]="d.fetchedAt">{{ lang.formatDate(d.fetchedAt) }}</time>
-              @if (d.cached) { · {{ lang.t('previewCached') }} }
+              @if (d.cached) {
+                · {{ lang.t('previewCached') }}
+              }
             </p>
+            @if (d.tlsFallback) {
+              <p
+                class="mt-1 rounded-full bg-error-container px-3 py-1 text-label-small font-medium text-on-error-container"
+              >
+                {{ lang.t('previewTlsFallback') }}
+              </p>
+            }
 
             <div class="mt-4 max-h-72 overflow-y-auto rounded-2xl bg-surface-container p-4">
-              <p class="max-w-[75ch] whitespace-pre-wrap text-body-medium text-on-surface">{{ d.text }}</p>
+              <p class="max-w-[75ch] whitespace-pre-wrap text-body-medium text-on-surface">
+                {{ d.text }}
+              </p>
             </div>
 
             <div class="mt-4 flex flex-wrap items-center gap-3">
-              <app-button variant="tonal" size="sm" (click)="preview.translate()" [disabled]="preview.translating()">
+              <app-button
+                variant="tonal"
+                size="sm"
+                (click)="preview.translate()"
+                [disabled]="preview.translating()"
+              >
                 @if (preview.translating()) {
                   <span class="pulse-soft">{{ lang.t('previewTranslating') }}</span>
                 } @else {
@@ -61,7 +103,9 @@
                 <p class="text-label-medium uppercase tracking-[0.18em] text-on-primary-container">
                   {{ lang.t('previewTranslatedLabel') }}
                 </p>
-                <p class="mt-2 max-w-[75ch] whitespace-pre-wrap text-body-medium text-on-primary-container">
+                <p
+                  class="mt-2 max-w-[75ch] whitespace-pre-wrap text-body-medium text-on-primary-container"
+                >
                   {{ preview.translatedText() }}
                 </p>
               </div>
@@ -72,12 +116,18 @@
 
       <footer class="mt-6 flex flex-wrap gap-2">
         @if (preview.data(); as d2) {
-          <a [href]="d2.url" target="_blank" rel="noopener"
-            class="press inline-flex min-h-12 items-center justify-center rounded-full bg-surface-container-low px-6 text-label-large font-medium text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]">
+          <a
+            [href]="d2.url"
+            target="_blank"
+            rel="noopener"
+            class="press inline-flex min-h-12 items-center justify-center rounded-full bg-surface-container-low px-6 text-label-large font-medium text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]"
+          >
             {{ lang.t('previewOpenOriginal') }}
           </a>
         }
-        <app-button variant="outlined" (click)="preview.close()">{{ lang.t('previewClose') }}</app-button>
+        <app-button variant="outlined" (click)="preview.close()">{{
+          lang.t('previewClose')
+        }}</app-button>
       </footer>
     </div>
   </div>

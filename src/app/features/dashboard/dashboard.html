@@ -1,83 +1,121 @@
 <section class="mx-auto max-w-6xl space-y-8 px-4 py-8 sm:py-12">
   <!-- Expressive hero surface -->
-  <div class="rise relative overflow-hidden rounded-3xl bg-primary p-8 text-on-primary shadow-level-4 sm:p-12">
-    <div aria-hidden="true"
-      class="pointer-events-none absolute -end-24 -top-24 size-80 rounded-full bg-on-primary/10 blur-3xl"></div>
-    <div aria-hidden="true"
-      class="pointer-events-none absolute -bottom-32 -start-16 size-96 rounded-full bg-tertiary/25 blur-3xl"></div>
+  <div
+    class="rise relative overflow-hidden rounded-3xl bg-primary p-8 text-on-primary shadow-level-4 sm:p-12"
+  >
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -end-24 -top-24 size-80 rounded-full bg-on-primary/10 blur-3xl"
+    ></div>
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute -bottom-32 -start-16 size-96 rounded-full bg-tertiary/25 blur-3xl"
+    ></div>
 
     <div class="relative">
-      <p class="text-label-large uppercase tracking-[0.2em] text-on-primary/80">{{ lang.t('heroEyebrow') }}</p>
+      <p class="text-label-large uppercase tracking-[0.2em] text-on-primary/80">
+        {{ lang.t('heroEyebrow') }}
+      </p>
       <h1 class="mt-3 max-w-3xl text-headline-large font-bold tracking-tight sm:text-display-small">
         {{ lang.t('heroTitle') }}
       </h1>
       <p class="mt-4 max-w-2xl text-body-large text-on-primary/95">
         {{ lang.t('heroDescSeed') }} <strong>Sifi Ghrieb</strong> {{ lang.t('heroDescDecret') }}
         {{ lang.t('heroDescLive') }}
-        <span class="underline decoration-2 underline-offset-4">premier-ministre.gov.dz, presidence.dz, aps.dz, joradp.dz, anep.com.dz</span>.
+        <span class="underline decoration-2 underline-offset-4"
+          >premier-ministre.gov.dz, presidence.dz, aps.dz, joradp.dz, anep.com.dz</span
+        >.
       </p>
-      <p class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-body-small text-on-primary/80">
+      <p
+        class="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-body-small text-on-primary/80"
+      >
         <span>{{ lang.t('formationDate') }}</span>
-        <time [attr.datetime]="formationDate" class="font-medium">{{ lang.formatDate(formationDate) }}</time>
+        <time [attr.datetime]="formationDate" class="font-medium">{{
+          lang.formatDate(formationDate)
+        }}</time>
         <span aria-hidden="true">·</span>
         <span>{{ lang.t('decreeRef') }} n°{{ decreeRef }}</span>
         <span aria-hidden="true">·</span>
         <span>{{ lang.t('lastCouncil') }}</span>
-        <time [attr.datetime]="lastCouncilDate" class="font-medium">{{ lang.formatDate(lastCouncilDate) }}</time>
+        <time [attr.datetime]="lastCouncilDate" class="font-medium">{{
+          lang.formatDate(lastCouncilDate)
+        }}</time>
       </p>
 
       <div class="mt-8 flex flex-wrap gap-3">
-        <a routerLink="/ministers"
-          class="press inline-flex min-h-12 items-center gap-2 rounded-full bg-on-primary px-6 text-label-large font-semibold text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]">
+        <a
+          routerLink="/ministers"
+          class="press inline-flex min-h-12 items-center gap-2 rounded-full bg-on-primary px-6 text-label-large font-semibold text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]"
+        >
           {{ lang.t('viewMinisters') }} {{ gov.totalCount() }} {{ lang.t('ministersWord') }}
         </a>
-        <a routerLink="/radar"
-          class="press inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-on-primary/50 px-6 text-label-large font-semibold hover:bg-on-primary/12 active:scale-[0.97]">
+        <a
+          routerLink="/radar"
+          class="press inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-on-primary/50 px-6 text-label-large font-semibold hover:bg-on-primary/12 active:scale-[0.97]"
+        >
           {{ lang.t('openRadar') }}
           @if (radar.unreadCount() > 0) {
-            <span class="rounded-full bg-tertiary px-2 py-0.5 text-label-small font-bold text-on-tertiary">
+            <span
+              class="rounded-full bg-tertiary px-2 py-0.5 text-label-small font-bold text-on-tertiary"
+            >
               {{ radar.unreadCount() }} new
             </span>
           }
         </a>
-        <a routerLink="/agent"
-          class="press inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-on-primary/50 px-6 text-label-large font-semibold hover:bg-on-primary/12 active:scale-[0.97]">
+        <a
+          routerLink="/agent"
+          class="press inline-flex min-h-12 items-center gap-2 rounded-full border-2 border-on-primary/50 px-6 text-label-large font-semibold hover:bg-on-primary/12 active:scale-[0.97]"
+        >
           {{ lang.t('askAgent') }}
         </a>
       </div>
 
       <p class="mt-6 text-body-small text-on-primary/75">
-        {{ lang.t('lastCheckMinisters') }} {{ gov.lastChecked() }} · {{ lang.t('radarWord') }} {{ radar.lastCheck() }}
+        {{ lang.t('lastCheckMinisters') }} {{ gov.lastChecked() }} · {{ lang.t('radarWord') }}
+        {{ radar.lastCheck() }}
       </p>
     </div>
   </div>
 
   <!-- Stat surfaces -->
   <div class="grid gap-4 md:grid-cols-3">
-    <article class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3">
+    <article
+      class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3"
+    >
       <div class="flex items-center gap-2">
         <span class="size-2.5 rounded-full bg-primary" aria-hidden="true"></span>
-        <h2 class="text-title-medium font-medium text-on-surface-variant">{{ lang.t('govCard') }}</h2>
+        <h2 class="text-title-medium font-medium text-on-surface-variant">
+          {{ lang.t('govCard') }}
+        </h2>
       </div>
-      <p class="mt-2 text-display-small font-bold leading-none text-on-surface tabular-nums">{{ gov.totalCount() }}</p>
+      <p class="mt-2 text-display-small font-bold leading-none text-on-surface tabular-nums">
+        {{ gov.totalCount() }}
+      </p>
       <p class="mt-3 text-body-medium text-on-surface-variant">
-        {{ lang.t('members') }} · {{ gov.newCount() }} {{ lang.t('newWord') }} · {{ gov.ministersEtatCount() }} {{ lang.t('etatWord') }}
+        {{ lang.t('members') }} · {{ gov.newCount() }} {{ lang.t('newWord') }} ·
+        {{ gov.ministersEtatCount() }} {{ lang.t('etatWord') }}
       </p>
       <p class="mt-1 text-body-small text-on-surface-variant">
         <time [attr.datetime]="formationDate">{{ lang.formatDate(formationDate) }}</time>
       </p>
-      <a routerLink="/ministers"
-        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8">
+      <a
+        routerLink="/ministers"
+        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8"
+      >
         {{ lang.t('explore') }}
       </a>
     </article>
 
-    <article class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3">
+    <article
+      class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3"
+    >
       <div class="flex items-center gap-2">
         <span class="size-2.5 rounded-full bg-secondary" aria-hidden="true"></span>
         <h2 class="text-title-medium font-medium text-on-surface-variant">{{ lang.t('radar') }}</h2>
       </div>
-      <p class="mt-2 text-display-small font-bold leading-none text-on-surface tabular-nums">{{ radar.items().length }}</p>
+      <p class="mt-2 text-display-small font-bold leading-none text-on-surface tabular-nums">
+        {{ radar.items().length }}
+      </p>
       <p class="mt-3 text-body-medium text-on-surface-variant">
         {{ lang.t('radarSignals') }} · {{ radar.unreadCount() }} {{ lang.t('unread') }}
       </p>
@@ -85,20 +123,28 @@
         {{ lang.t('lastCouncil') }}
         <time [attr.datetime]="lastCouncilDate">{{ lang.formatDate(lastCouncilDate) }}</time>
       </p>
-      <a routerLink="/radar"
-        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8">
+      <a
+        routerLink="/radar"
+        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8"
+      >
         {{ lang.t('viewDecrees') }}
       </a>
     </article>
 
-    <article class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3">
+    <article
+      class="elevate rounded-2xl bg-surface-container-low p-6 shadow-level-1 hover:-translate-y-0.5 hover:shadow-level-3"
+    >
       <div class="flex items-center gap-2">
         <span class="size-2.5 rounded-full bg-tertiary" aria-hidden="true"></span>
-        <h2 class="text-title-medium font-medium text-on-surface-variant">{{ lang.t('agentPuter') }}</h2>
+        <h2 class="text-title-medium font-medium text-on-surface-variant">
+          {{ lang.t('agentPuter') }}
+        </h2>
       </div>
       <p class="mt-3 text-body-medium text-on-surface-variant">{{ lang.t('agentPuterDesc') }}</p>
-      <a routerLink="/agent"
-        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8">
+      <a
+        routerLink="/agent"
+        class="press mt-4 inline-flex items-center gap-1 rounded-full px-3 py-2 text-label-large font-semibold text-primary hover:bg-primary/8"
+      >
         {{ lang.t('testAgent') }}
       </a>
     </article>
@@ -107,24 +153,37 @@
   <!-- Monitored sources -->
   <section class="rounded-3xl bg-surface-container-low p-6 shadow-level-1 sm:p-8">
     <div class="flex flex-wrap items-center gap-3">
-      <h2 class="text-headline-small font-semibold text-on-surface">{{ lang.t('sourcesTitle') }}</h2>
-      <span class="rounded-full bg-primary-container px-3 py-1 text-label-medium font-bold text-on-primary-container">
+      <h2 class="text-headline-small font-semibold text-on-surface">
+        {{ lang.t('sourcesTitle') }}
+      </h2>
+      <span
+        class="rounded-full bg-primary-container px-3 py-1 text-label-medium font-bold text-on-primary-container"
+      >
         {{ sources.length }} {{ lang.t('sourcesCount') }}
       </span>
     </div>
     <p class="mt-2 text-body-small text-on-surface-variant">
-      {{ lang.t('verifiedBadge') }} : composition, JORADP N°67 du 16/09/2026, BOMOP hebdo, portail marches-publics.gov.dz.
+      {{ lang.t('verifiedBadge') }} : composition, JORADP N°67 du 16/09/2026, BOMOP hebdo, portail
+      marches-publics.gov.dz.
     </p>
 
     <ul class="mt-6 grid gap-4 md:grid-cols-2">
       @for (s of sources; track s.id) {
-        <li class="elevate flex flex-col rounded-2xl bg-surface-container p-5 hover:-translate-y-0.5 hover:shadow-level-2">
+        <li
+          class="elevate flex flex-col rounded-2xl bg-surface-container p-5 hover:-translate-y-0.5 hover:shadow-level-2"
+        >
           <div class="flex flex-wrap items-center gap-2">
-            <span class="rounded-full bg-secondary-container px-3 py-1 text-label-small font-bold text-on-secondary-container">
+            <span
+              class="rounded-full bg-secondary-container px-3 py-1 text-label-small font-bold text-on-secondary-container"
+            >
               {{ s.kind }}
             </span>
-            <a [href]="s.url" target="_blank" rel="noopener"
-              class="press rounded text-title-medium font-semibold text-primary underline-offset-4 hover:underline">
+            <a
+              [href]="s.url"
+              target="_blank"
+              rel="noopener"
+              class="press rounded text-title-medium font-semibold text-primary underline-offset-4 hover:underline"
+            >
               {{ lang.sourceLabel(s) }}
             </a>
           </div>
@@ -138,14 +197,21 @@
             </div>
             <div class="flex gap-2">
               <dt class="font-semibold">{{ lang.t('frequencyLabel') }}</dt>
-              <dd>{{ lang.sourceFrequency(s) }} · {{ lang.t('languagesLabel') }}: {{ s.languages }}</dd>
+              <dd>
+                {{ lang.sourceFrequency(s) }} · {{ lang.t('languagesLabel') }}: {{ s.languages }}
+              </dd>
             </div>
             @if (s.keyPages?.length) {
               <div class="flex gap-2">
                 <dt class="font-semibold">{{ lang.t('keyPagesLabel') }}</dt>
                 <dd class="flex flex-wrap gap-x-2">
                   @for (k of s.keyPages; track k) {
-                    <a [href]="k" target="_blank" rel="noopener" class="text-primary underline underline-offset-2 hover:opacity-80">
+                    <a
+                      [href]="k"
+                      target="_blank"
+                      rel="noopener"
+                      class="text-primary underline underline-offset-2 hover:opacity-80"
+                    >
                       {{ k }}
                     </a>
                   }
@@ -154,7 +220,12 @@
             }
           </dl>
 
-          <app-button class="mt-4 self-start" variant="tonal" size="sm" (click)="preview.open(s.url, lang.sourceLabel(s))">
+          <app-button
+            class="mt-4 self-start"
+            variant="tonal"
+            size="sm"
+            (click)="preview.open(s.url, lang.sourceLabel(s))"
+          >
             {{ lang.t('previewButton') }}
           </app-button>
         </li>

@@ -1,9 +1,13 @@
 <section class="mx-auto max-w-3xl space-y-5 px-4 py-6 sm:py-8">
   <header>
-    <h1 class="text-headline-medium font-bold tracking-tight text-on-surface">{{ lang.t('agentTitle') }}</h1>
+    <h1 class="text-headline-medium font-bold tracking-tight text-on-surface">
+      {{ lang.t('agentTitle') }}
+    </h1>
     <p class="mt-1 text-body-medium text-on-surface-variant">{{ lang.t('agentSubtitle') }}</p>
     @if (puter.lastError()) {
-      <p class="mt-3 rounded-2xl bg-error-container px-4 py-3 text-body-small text-on-error-container">
+      <p
+        class="mt-3 rounded-2xl bg-error-container px-4 py-3 text-body-small text-on-error-container"
+      >
         {{ puter.lastError() }}
       </p>
     }
@@ -18,11 +22,15 @@
   <div class="min-h-[320px] space-y-3 rounded-3xl bg-surface-container-low p-5 shadow-level-1">
     @for (m of agent.messages(); track m.id) {
       @if (m.role === 'user') {
-        <div class="rise ms-auto max-w-[85%] rounded-3xl rounded-ee-md bg-primary px-4 py-3 text-body-medium text-on-primary shadow-level-1">
+        <div
+          class="rise ms-auto max-w-[85%] rounded-3xl rounded-ee-md bg-primary px-4 py-3 text-body-medium text-on-primary shadow-level-1"
+        >
           <p class="whitespace-pre-wrap">{{ m.text }}</p>
         </div>
       } @else {
-        <div class="rise me-auto max-w-[90%] rounded-3xl rounded-es-md bg-surface-container-high px-4 py-3 text-body-medium text-on-surface">
+        <div
+          class="rise me-auto max-w-[90%] rounded-3xl rounded-es-md bg-surface-container-high px-4 py-3 text-body-medium text-on-surface"
+        >
           <p class="whitespace-pre-wrap">{{ m.text }}</p>
         </div>
       }
@@ -32,9 +40,17 @@
     @if (agent.isThinking()) {
       <div class="me-auto flex items-center gap-2 rounded-3xl bg-surface-container-high px-4 py-3">
         <span class="size-2 animate-bounce rounded-full bg-primary" aria-hidden="true"></span>
-        <span class="size-2 animate-bounce rounded-full bg-secondary [animation-delay:120ms]" aria-hidden="true"></span>
-        <span class="size-2 animate-bounce rounded-full bg-tertiary [animation-delay:240ms]" aria-hidden="true"></span>
-        <span class="pulse-soft ms-1 text-body-small text-on-surface-variant">{{ lang.t('thinking') }}</span>
+        <span
+          class="size-2 animate-bounce rounded-full bg-secondary [animation-delay:120ms]"
+          aria-hidden="true"
+        ></span>
+        <span
+          class="size-2 animate-bounce rounded-full bg-tertiary [animation-delay:240ms]"
+          aria-hidden="true"
+        ></span>
+        <span class="pulse-soft ms-1 text-body-small text-on-surface-variant">{{
+          lang.t('thinking')
+        }}</span>
       </div>
     }
   </div>
@@ -43,7 +59,9 @@
     <div class="min-w-[240px] flex-1">
       <input [formField]="chatForm.question" [placeholder]="lang.t('inputPh')" class="w-full" />
       @if (chatForm.question().touched() && chatForm.question().errors().length) {
-        <p class="mt-2 ps-4 text-body-small font-medium text-error">{{ chatForm.question().errors()[0].message }}</p>
+        <p class="mt-2 ps-4 text-body-small font-medium text-error">
+          {{ chatForm.question().errors()[0].message }}
+        </p>
       }
     </div>
     <app-button type="submit" [disabled]="chatForm().invalid() || agent.isThinking()">
@@ -51,13 +69,36 @@
     </app-button>
   </form>
 
-  <footer class="flex flex-wrap items-center justify-between gap-3 text-body-small text-on-surface-variant">
-    <label class="press inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-full px-3 hover:bg-on-surface/6">
-      <input type="checkbox" [checked]="agent.useLiveContext()"
-        (change)="agent.useLiveContext.set(!agent.useLiveContext())"
-        class="size-5 accent-[var(--color-primary)]" />
-      {{ lang.t('injectCtx') }}
-    </label>
-    <app-button variant="text" size="sm" (click)="agent.clear()">{{ lang.t('clearConv') }}</app-button>
+  <footer
+    class="flex flex-wrap items-center justify-between gap-3 text-body-small text-on-surface-variant"
+  >
+    <div class="flex flex-wrap items-center gap-2">
+      <label
+        class="press inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-full px-3 hover:bg-on-surface/6"
+      >
+        <input
+          type="checkbox"
+          [checked]="agent.useLiveContext()"
+          (change)="agent.useLiveContext.set(!agent.useLiveContext())"
+          class="size-5 accent-[var(--color-primary)]"
+        />
+        {{ lang.t('injectCtx') }}
+      </label>
+      <label
+        class="press inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-full px-3 hover:bg-on-surface/6"
+        [title]="lang.t('webSearchHint')"
+      >
+        <input
+          type="checkbox"
+          [checked]="agent.webSearch()"
+          (change)="agent.webSearch.set(!agent.webSearch())"
+          class="size-5 accent-[var(--color-primary)]"
+        />
+        <span aria-hidden="true">🌐</span> {{ lang.t('webSearch') }}
+      </label>
+    </div>
+    <app-button variant="text" size="sm" (click)="agent.clear()">{{
+      lang.t('clearConv')
+    }}</app-button>
   </footer>
 </section>

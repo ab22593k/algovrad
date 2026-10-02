@@ -1,10 +1,5 @@
 export type MinisterCategory =
-  | 'premier'
-  | 'ministre-etat'
-  | 'ministre'
-  | 'ministre-delegue'
-  | 'secretaire-etat'
-  | 'wali';
+  'premier' | 'ministre-etat' | 'ministre' | 'ministre-delegue' | 'secretaire-etat' | 'wali';
 
 export interface Minister {
   id: string;
@@ -19,7 +14,22 @@ export interface Minister {
   decree?: string;
 }
 
-export type RadarKind = 'decret' | 'communique' | 'appel-offre' | 'conseil-ministres' | 'nomination';
+export type RadarKind =
+  | 'decret'
+  | 'communique'
+  | 'appel-offre'
+  | 'conseil-ministres'
+  | 'nomination'
+  /** Provisional award published (contract about to be signed). */
+  | 'attribution'
+  /** Tender failed (no valid bid) — usually followed by a re-tender. */
+  | 'infructuosite'
+  /** Award cancelled — the contract is released back to market. */
+  | 'annulation'
+  /** Formal notice served on a failing contractor. */
+  | 'mise-en-demeure'
+  /** Deadline extended — the bid window is still open. */
+  | 'prorogation';
 
 export interface RadarItem {
   id: string;
@@ -32,6 +42,15 @@ export interface RadarItem {
   publishedAt: string;
   isNew?: boolean;
   tags: string[];
+  /**
+   * Business signal for enterprises: the tender failed, was cancelled, or its
+   * deadline was extended — i.e. the opportunity is live again.
+   */
+  opportunity?: boolean;
+  /** ANEP / BO reference number when the notice carries one. */
+  ref?: string;
+  /** Procuring entity (client) for tender notices. */
+  client?: string;
 }
 
 export interface OfficialSource {

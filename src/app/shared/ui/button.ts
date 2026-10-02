@@ -37,14 +37,14 @@ export class Button {
       'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary ' +
       'disabled:pointer-events-none disabled:opacity-45';
     const sizing =
-      this.size() === 'sm'
-        ? 'min-h-10 px-4 text-label-medium'
-        : 'min-h-12 px-6 text-label-large';
+      this.size() === 'sm' ? 'min-h-10 px-4 text-label-medium' : 'min-h-12 px-6 text-label-large';
     const width = this.full() ? 'w-full' : '';
     const variants: Record<ButtonVariant, string> = {
       filled: 'bg-primary text-on-primary shadow-level-1 hover:shadow-level-2 active:scale-[0.97]',
-      tonal: 'bg-secondary-container text-on-secondary-container hover:brightness-[1.04] active:scale-[0.97]',
-      elevated: 'bg-surface-container-low text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]',
+      tonal:
+        'bg-secondary-container text-on-secondary-container hover:brightness-[1.04] active:scale-[0.97]',
+      elevated:
+        'bg-surface-container-low text-primary shadow-level-2 hover:shadow-level-3 active:scale-[0.97]',
       outlined: 'border border-outline text-primary hover:bg-primary/8 active:scale-[0.97]',
       text: 'text-primary hover:bg-primary/8 active:scale-[0.97]',
     };

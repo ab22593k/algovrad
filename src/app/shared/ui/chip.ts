@@ -4,11 +4,7 @@ import { Component, computed, input } from '@angular/core';
 @Component({
   selector: 'app-chip',
   template: `
-    <button
-      type="button"
-      [attr.aria-pressed]="selected()"
-      [class]="classes()"
-    >
+    <button type="button" [attr.aria-pressed]="selected()" [class]="classes()">
       <ng-content />
     </button>
   `,

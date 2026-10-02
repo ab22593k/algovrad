@@ -22,13 +22,13 @@ bun run test    # unit tests (Vitest)
 Puter.js (AI, KV, auth User-Pays) stays client-side in the browser. Agents fetch
 seed truth over HTTP, then use `puter.ai.chat` for live re-verification:
 
-| Endpoint           | Content                                              |
-| ------------------ | ---------------------------------------------------- |
-| `GET /api/health`  | `{ ok, app, runtime, time }`                         |
-| `GET /api/ministers` | 38 ministers, `formationDate`, `decreeRef`         |
-| `GET /api/radar`   | radar items, `lastCouncilDate`                       |
-| `GET /api/sources` | 12 monitored official sources with details          |
-| `GET /api/agent-system` | agent system prompt                              |
+| Endpoint                | Content                                    |
+| ----------------------- | ------------------------------------------ |
+| `GET /api/health`       | `{ ok, app, runtime, time }`               |
+| `GET /api/ministers`    | 38 ministers, `formationDate`, `decreeRef` |
+| `GET /api/radar`        | radar items, `lastCouncilDate`             |
+| `GET /api/sources`      | 12 monitored official sources with details |
+| `GET /api/agent-system` | agent system prompt                        |
 
 Example dsh-plugin usage: `GET /api/ministers` → diff vs
 `https://premier-ministre.gov.dz/fr/gouvernement/composition` → report new drops.

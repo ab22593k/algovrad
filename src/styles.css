@@ -234,8 +234,15 @@
   body {
     background-color: var(--color-surface);
     color: var(--color-on-surface);
-    font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans Arabic',
-      'Helvetica Neue', sans-serif;
+    font-family:
+      'Inter',
+      system-ui,
+      -apple-system,
+      'Segoe UI',
+      Roboto,
+      'Noto Sans Arabic',
+      'Helvetica Neue',
+      sans-serif;
     line-height: var(--leading-body);
     min-height: 100dvh;
   }
@@ -261,7 +268,8 @@
     border-radius: var(--radius-full);
     padding-inline: 1rem;
     min-height: 3rem;
-    transition: border-color var(--duration-short-4) var(--ease-standard),
+    transition:
+      border-color var(--duration-short-4) var(--ease-standard),
       box-shadow var(--duration-short-4) var(--ease-standard);
   }
 

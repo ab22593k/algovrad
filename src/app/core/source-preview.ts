@@ -12,6 +12,8 @@ export interface PreviewData {
   text: string;
   fetchedAt: string;
   cached: boolean;
+  /** True when the strict TLS attempt failed and an allowlisted retry was used. */
+  tlsFallback?: boolean;
 }
 
 @Service()

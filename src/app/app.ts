@@ -10,13 +10,7 @@ import { Button } from './shared/ui/button';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet,
-    RouterLink,
-    RouterLinkActive,
-    SourcePreviewDialog,
-    Button,
-  ],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, SourcePreviewDialog, Button],
   templateUrl: './app.html',
 })
 export class App {

@@ -26,7 +26,9 @@ export class LanguageStore {
           if (nav === 'ar') this.lang.set('ar');
           else if (nav === 'en') this.lang.set('en');
         }
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
     effect(() => {
       const l = this.lang();
@@ -34,7 +36,9 @@ export class LanguageStore {
       if (this.isBrowser) {
         try {
           localStorage.setItem(KEY, l);
-        } catch { /* ignore */ }
+        } catch {
+          /* ignore */
+        }
         document.documentElement.lang = l;
         document.documentElement.dir = d;
       }
@@ -123,7 +127,11 @@ export class LanguageStore {
     if (isNaN(d.getTime())) return iso;
     const locale = this.lang() === 'ar' ? 'ar-DZ' : this.lang() === 'en' ? 'en-GB' : 'fr-FR';
     try {
-      return new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'short', year: 'numeric' }).format(d);
+      return new Intl.DateTimeFormat(locale, {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      }).format(d);
     } catch {
       return dateOnly;
     }
